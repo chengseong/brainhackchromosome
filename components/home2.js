@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Button, View, Text, StyleSheet } from 'react-native';
 
-function HomePage({navigation}) {
+function Home2({navigation}) {
     return (
         <View style = {styles.container}> 
-            <Text>Home Page</Text>
+            <Text>Home 2</Text>
         </View>
     );
-};
+} 
 
 const styles = StyleSheet.create({
     container: {
@@ -17,4 +17,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default HomePage;
+export default Home2;
