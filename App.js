@@ -1,25 +1,48 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, {useState} from 'react';
+import * as Font from 'expo-font';
 import { StyleSheet, Text, View } from 'react-native';
-import { Provider as PaperProvider } from 'react-native-paper';
+
+import AppLoading from 'expo-app-loading';
 import { NavigationContainer  } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
 
 
 import HomeStack from './routes/home.js';
 import ComponentStack from './routes/component.js'
 import loginStack from './routes/login.js';
 
-import Consult from './components/bookConsult2'
-//import Login from './components/loginPage.js'
 
-const Drawer = createDrawerNavigator();
+const getFonts = () => Font.loadAsync({
+  'roboto-regular': require('./assets/fonts/Roboto/Roboto-Regular.ttf'),
+  'roboto-light': require('./assets/fonts/Roboto/Roboto-Light.ttf'),
+  'roboto-bold': require('./assets/fonts/Roboto/Roboto-Bold.ttf'),
+})
+
+
+const Tab = createBottomTabNavigator();
 
 export default function App() {
-  return (
-    <PaperProvider>
-      <Consult />
-    </PaperProvider>
-  );
+
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+  
+  if (fontsLoaded) {
+    return (
+      <NavigationContainer> 
+        <Tab.Navigator initialRouteName = "Home">
+          <Tab.Screen name="HomeStack" component={HomeStack} />
+          <Tab.Screen name="ComponentStack" component={ComponentStack} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    );
+  } else {
+    return (
+      <AppLoading
+        startAsync={getFonts} 
+        onFinish={() => setFontsLoaded(true)}
+        onError={console.warn} 
+      />
+    )
+  }
 }
