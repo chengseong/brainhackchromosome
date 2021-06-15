@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {Alert, StyleSheet, Text, View, TouchableOpacity, Button} from 'react-native';
+import {Alert, StyleSheet, Text, View, TouchableOpacity, Dimensions} from 'react-native';
 import {Agenda} from 'react-native-calendars';
 import { Ionicons } from '@expo/vector-icons'
 import { StatusBar } from 'expo-status-bar';
+import Button from '../shared/button';
 
 
 export default class AgendaScreen extends Component {
@@ -16,9 +17,9 @@ export default class AgendaScreen extends Component {
   render() {
     return ( 
 
-        <View style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.text}>Calender</Text>
+        <Text style={styles.text}>Calendar</Text>
         <View flex={1} flexDirection='row' justifyContent='flex-end' paddingRight={40} paddingTop={10}>
           <Ionicons
             name="notifications-outline"
@@ -37,10 +38,14 @@ export default class AgendaScreen extends Component {
             rowHasChanged={this.rowHasChanged.bind(this)}
             theme={{agendaTodayColor: '#5464F8', agendaDayTextColor:'#5464F8', dotColor: 'salmon',selectedDayBackgroundColor:'#5464F8',todayTextColor:'#5464F8'}}
         />
-      <Button
-          title="Add Appointment"
-          color="#5464F8"
-          />
+      <View
+          flex={0.113}
+          alignItems="center"
+          paddingTop={10}>
+            <Button
+                onPress={() => navigation.navigate("bookConsult1")}
+                text='Book an appointment'/>
+      </View>
     </View>
 
 
@@ -113,24 +118,27 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginRight: 10,
-    marginTop: 17
+    marginTop: 30
   },
   emptyDate: {
     height: 15,
     flex: 1,
-    paddingTop: 30
+    paddingTop: 30,
+    backgroundColor: 'white',
+    justifyContent: 'center'
   },
   container: {
-      flex: 1
+      paddingTop: Dimensions.get('screen').height * 0.05,
+      flex: 1,
+      backgroundColor: 'white'
   },
   text: {
     fontSize: 40,
-    paddingLeft: 10,
+    paddingLeft: 30,
     fontFamily: 'roboto-light'
   },
   header: {
     flexDirection: 'row',
     paddingTop: 20,
-  }  
-
+  },
 });
