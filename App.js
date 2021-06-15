@@ -7,6 +7,7 @@ import { Ionicons  } from '@expo/vector-icons';
 import AppLoading from 'expo-app-loading';
 import { NavigationContainer  } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 
 
 import CalendarStack from './routes/calenderStack.js'
@@ -34,6 +35,7 @@ export default function App() {
     if (loggedIn) {
       return (
       <NavigationContainer> 
+
         <Tab.Navigator initialRouteName = "Home" screenOptions = {({route}) => ({
             tabBarIcon : ({focused, size, color}) => {
               let iconName;

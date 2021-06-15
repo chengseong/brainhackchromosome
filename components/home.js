@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+
 import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Modal, TouchableWithoutFeedback, Keyboard,} from 'react-native';
 import {Button} from 'react-native-paper'
 import { EvilIcons } from '@expo/vector-icons';
@@ -6,11 +7,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
 import MapView from 'react-native-maps';
 import Card from '../shared/card';
+import { Feather } from '@expo/vector-icons';
+
 
 export default function Home({navigation}) {
-    const [modalVisible, setModalVisible] = useState(false);
-
-    const toggleModal = () => setModalVisible(true);
+    const [appointmentsVisible, setAppointmentsVisible] = useState(false);
+    const [notificationsVisible, setNotificationsVisible] = useState(false);
+    const [searchText, setSearchText] = useState('');
 
     const appointments = [
         {clinicName: 'ABC clinic', doctor: 'Dr Ang Koon Hian', date: '22nd May 2021', time: '10:30 - 11:00', key:'1'},
@@ -24,30 +27,6 @@ export default function Home({navigation}) {
 
     return (
         <View style = {styles.container}> 
-            <Modal
-                animationType='slide'
-                visible={modalVisible}
-                transparent={true}>
-                <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-                    <View style={styles.modalContainer}>
-                        <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
-                            <View style={styles.modalView}>
-                                <Text style={styles.modalTitle}>{toShow.clinicName}</Text>
-                                <Text style={{...styles.modalDescription, ...styles.modalDoctor}}>{toShow.doctor}</Text>
-                                <Text style={styles.modalDescription}>{toShow.date}</Text>
-                                <Text style={styles.modalDescription}>{toShow.time}</Text>
-                                <MapView 
-                                    style={styles.mapView}
-                                    initialRegion={{
-                                        latitude:1.2966,
-                                        longitude:103.7764,
-                                        latitudeDelta:0.002,
-                                        longitudeDelta:0.002}}/>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                </TouchableWithoutFeedback>
-            </Modal>
             <View style = {styles.header}>
                 <View flex={2}>
                     <Text style = {styles.name}>Placeholder Name</Text>
@@ -56,9 +35,49 @@ export default function Home({navigation}) {
                     <Ionicons
                         name="notifications-outline"
                         size={24}
-                        color='#0009FF' />
+                        color='#0009FF'
+                        onPress={() => setNotificationsVisible(true)} />
                 </View>
             </View>
+
+            {/*Notification Modal Start*/}
+            <Modal
+                animationType='fade'
+                visible={notificationsVisible}
+                transparent={true}>
+                <TouchableWithoutFeedback onPress={() => setNotificationsVisible(false)}>
+                    <View style={styles.modalContainer}>
+                        <TouchableWithoutFeedback onPress={() => setNotificationsVisible(true)}>
+                            <View style={{...styles.modalView, ...styles.notificationsModal}}>
+                            <FlatList
+                                paddingTop={10}
+                                data={appointments}
+                                renderItem={({item}) => (
+                                    <View style={styles.notificationStyle}> 
+                                        <View justifyContent='center'>
+                                            <Feather
+                                                name="alert-circle"
+                                                size={12}
+                                                color='#0009FF' />
+                                        </View>
+                                        <View 
+                                            paddingTop={15}
+                                            paddingLeft={20}
+                                            paddingRight={20}
+                                            alignItems='center'>
+                                            <Text>The following appointment has been confirmed</Text>
+                                            <Text></Text>
+                                        </View>
+                                    </View>
+                            )}/>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>
+                </TouchableWithoutFeedback>
+            </Modal>
+            {/*Notification Modal End*/}
+
+            {/* Subheader */}
             <View style = {styles.subheader}>
                 <Text style = {styles.search}>Search</Text>
                 <Text style = {styles.recentAppointments}>Recent</Text>
@@ -70,9 +89,12 @@ export default function Home({navigation}) {
                     color = '#5464F8'/>
                     <TextInput 
                         style = {styles.input}
+                        onChangeText = {(val) => setSearchText(val)}
                     />
                 </View>
             </View>
+
+            {/* Upcoming Appointments Start */}
             <View style = {styles.body}>
                 <Text style = {styles.bodyText}>Upcoming Appointments</Text>
                 <FlatList
@@ -82,7 +104,7 @@ export default function Home({navigation}) {
                     renderItem={({item}) => (
                         <TouchableOpacity onPress={() => {
                             showItem(item);
-                            toggleModal();}}>
+                            setAppointmentsVisible(true);}}>
                             <Card>
                                 <Text style={styles.clinicName}>{item.clinicName}</Text>
                                 <Text style={styles.cardText}>{item.doctor}</Text>
@@ -93,8 +115,49 @@ export default function Home({navigation}) {
                         </TouchableOpacity>
                     )}/>
             </View>
+
+            {/* Upcoming Appointments End */}
+
+            {/*Appointment Info Modal Start*/}
+            <Modal
+                animationType='fade'
+                visible={appointmentsVisible}
+                transparent={true}>
+                <TouchableWithoutFeedback onPress={() => setAppointmentsVisible(false)}>
+                    <View style={styles.modalContainer}>
+                        <TouchableWithoutFeedback onPress={() => setAppointmentsVisible(true)}>
+                            <View style={{...styles.modalView, ...styles.appointmentsModal}}>
+                                <View paddingTop={20} paddingLeft={20}>
+                                    <Text style={styles.modalTitle}>{toShow.clinicName}</Text>
+                                    <Text style={{...styles.modalDescription, ...styles.modalDoctor}}>{toShow.doctor}</Text>
+                                    <Text style={styles.modalDescription}>{toShow.date}</Text>
+                                    <Text style={styles.modalDescription}>{toShow.time}</Text>
+                                    <MapView 
+                                        style={styles.mapView}
+                                        initialRegion={{
+                                            latitude:1.2966,
+                                            longitude:103.7764,
+                                            latitudeDelta:0.002,
+                                            longitudeDelta:0.002}}/>
+                                    <TouchableOpacity
+                                        onPress={() => {}}
+                                        style={styles.button}>
+                                            <View>
+                                                <Text style={styles.cancelText}>Cancel Appointment</Text>
+                                            </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>
+                </TouchableWithoutFeedback>
+            </Modal>
+            {/*Appointment Info Modal End*/}
+
+
             <View style = {{alignItems:"center"}}><Button mode = "contained" onPress = {() => navigation.navigate("bookConsult1")}>Book an appointment</Button>
             </View>
+
         </View>
     );
 } 
@@ -176,18 +239,18 @@ const styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
-        paddingLeft: 35,
-        backgroundColor: 'rgba(52, 52, 52, 0.8)',
+        backgroundColor: 'rgba(222, 222, 222, 0.8)',
     },
     modalView: {
         backgroundColor: "white",
-        height: 600,
-        width: 300,
         borderRadius: 20,
         borderWidth: 1,
         borderColor: '#dddd',
-        paddingLeft:20,
-        paddingTop:20
+    },
+    appointmentsModal: {
+        marginLeft: Dimensions.get('screen').width * 0.1,
+        height: Dimensions.get('screen').height * 0.7,
+        width: Dimensions.get('screen').width * 0.8,
     },
     modalTitle: {
         fontFamily:'roboto-bold',
@@ -202,8 +265,36 @@ const styles = StyleSheet.create({
         fontSize:15,
     },
     mapView: {
-        width:250,
+        width:260,
         height:100,
-        borderRadius:15
+        borderRadius:15,
+        marginTop: 20
+    },
+    button: {
+        width: 220,
+        height: 36,
+        alignItems: "center",
+        backgroundColor: "#0009FF",
+        marginTop: 20,
+        marginLeft: 15,
+        borderRadius: 18
+    },
+    cancelText: {
+        fontFamily: 'roboto-bold',
+        fontSize: 16,
+        color: 'white',
+        paddingVertical: 10,     
+    },
+    notificationStyle :{
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+        paddingLeft:20,
+        paddingRight:20,
+    },
+    notificationsModal :{
+        marginLeft: Dimensions.get('screen').width * 0.1,
+        height: Dimensions.get('screen').height * 0.7,
+        width: Dimensions.get('screen').width * 0.8,
     }
 });
