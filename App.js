@@ -2,12 +2,11 @@ import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
 import * as Font from 'expo-font';
 import { StyleSheet, Text, View } from 'react-native';
-import { Ionicons  } from '@expo/vector-icons';
+import { Ionicons,  } from '@expo/vector-icons';
 
 import AppLoading from 'expo-app-loading';
 import { NavigationContainer  } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
 
 
 import CalendarStack from './routes/calenderStack.js'
@@ -36,26 +35,33 @@ export default function App() {
       return (
       <NavigationContainer> 
 
-        <Tab.Navigator initialRouteName = "Home" screenOptions = {({route}) => ({
-            tabBarIcon : ({focused, size, color}) => {
-              let iconName;
-              if (route.name === 'Calendar') {
-                iconName = focused
-                ? 'ios-information-circle'
-                : 'ios-information-circle-outline';
-              } else {
-                iconName = focused ? 'ios-list-box' : 'ios-list';
-              }
-              return <Ionicons  icon = {iconName} size = {size} color = {color}/>;
-            },
-          })}
-          tabBarOptions={{
-            activeTintColor: '#5464F8',
-            inactiveTintColor: 'gray',
-          }}
-          >
-          <Tab.Screen name = "Calendar" component = {CalendarStack} />
+        <Tab.Navigator
+        initialRouteName = "Home"
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'Home') {
+              iconName = focused
+                ? 'home'
+                : 'home-outline';
+            } else if (route.name === 'Calendar') {
+              iconName = focused ? 'calendar' : 'calendar-outline';
+            }
+
+            // You can return any component that you like here!
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+        })}
+        tabBarOptions={{
+          activeTintColor:'white',
+          inactiveTintColor:'gray',
+          activeBackgroundColor: '#5464F8',
+          tabStyle: {borderRadius:30, width:50}
+        }}
+      >
           <Tab.Screen name="Home" component={HomeStack} />
+          <Tab.Screen name = "Calendar" component = {CalendarStack} />
         </Tab.Navigator>
       </NavigationContainer>
       )

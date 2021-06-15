@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 
 import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Modal, TouchableWithoutFeedback, Keyboard,} from 'react-native';
-import {Button} from 'react-native-paper'
-import { EvilIcons } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
+import { EvilIcons, Ionicons, } from '@expo/vector-icons';
+
 import { Dimensions } from 'react-native';
 import MapView from 'react-native-maps';
 import Card from '../shared/card';
 import { Feather } from '@expo/vector-icons';
+import Button from '../shared/button';
 
 
 export default function Home({navigation}) {
@@ -155,7 +155,13 @@ export default function Home({navigation}) {
             {/*Appointment Info Modal End*/}
 
 
-            <View style = {{alignItems:"center"}}><Button mode = "contained" onPress = {() => navigation.navigate("bookConsult1")}>Book an appointment</Button>
+            <View 
+                alignItems="center"
+                flex = {1}
+                marginTop={10}>
+                <Button
+                    onPress={() => navigation.navigate("bookConsult1")}
+                    text='Book an appointment'/>
             </View>
 
         </View>
@@ -166,16 +172,17 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white',
-        paddingLeft: 30
+        paddingTop : Dimensions.get('screen').height * 0.1,
     },
     header: {
         flex: 0.5,
         flexDirection: 'row',
-        marginTop: 20,
+        paddingLeft: 30,
     },
     subheader: {
         flex: 2.5,
         marginTop: 20,
+        paddingLeft: 30,
     },
     name: {
         fontFamily: 'roboto-light',
@@ -205,6 +212,7 @@ const styles = StyleSheet.create({
     },
     body: {
         flex: 6,
+        paddingLeft: 30,
     },
     bodyText: {
         fontFamily: 'roboto-regular',
@@ -274,7 +282,7 @@ const styles = StyleSheet.create({
         width: 220,
         height: 36,
         alignItems: "center",
-        backgroundColor: "#0009FF",
+        backgroundColor: "#5464F8",
         marginTop: 20,
         marginLeft: 15,
         borderRadius: 18
@@ -296,5 +304,5 @@ const styles = StyleSheet.create({
         marginLeft: Dimensions.get('screen').width * 0.1,
         height: Dimensions.get('screen').height * 0.7,
         width: Dimensions.get('screen').width * 0.8,
-    }
+    },
 });

@@ -1,9 +1,10 @@
 import * as React from 'react';
-import {View, Text, StyleSheet, Dimensions} from 'react-native';
-import {Picker} from '@react-native-picker/picker';
+import {View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView} from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { AntDesign } from '@expo/vector-icons'; 
-import {Button} from 'react-native-paper';
 import MapView from 'react-native-maps';
+import Button from '../shared/button';
+
 
 function bookConsult1({navigation}) {
     //To pull from backend
@@ -16,84 +17,103 @@ function bookConsult1({navigation}) {
 
 
     return (
-        <View style = {styles.container}>
-            <View style = {styles.header}><Text style = {styles.headerText}>Book a Consultation</Text></View>
-            <View style = {styles.selectClinicContainer}>
-                <Text style = {styles.subHeaderText}>Select a Clinic</Text>
-                <Picker 
-                    mode = "dropdown"
-                    selectedValue = {selectedClinic}
-                    onValueChange = {(clinic) => {setSelectedClinic(clinic)}}
-                    >
-                    {clinicArr.map(item => (
-                      <Picker.Item label = {item.name} value = {item}/>  
-                    ))}
-                    </Picker>
+        <ScrollView backgroundColor='white' style = {{flexGrow:1}}>
+            <View style = {styles.container}>
+            <View style = {styles.header}>
+                <Text style = {styles.headerText}>Book a Consultation</Text>
             </View>
-            <View style = {{flex:0.5, marginLeft: 30}}> 
-                <Text style = {styles.subHeaderText}>Clinic Details</Text>
-                <Text style = {styles.subsubHeaderText}>Address: {selectedClinic.address}</Text>
-                <View stlye = {{flex:0.5}}>
-                <MapView style={styles.map} region={{
-                    latitude: selectedClinic.lat,
-                    longitude: selectedClinic.lon,
-                    latitudeDelta: 0.0032,
-                    longitudeDelta: 0.0032,
-                    }}/> 
+                <View style = {styles.selectClinicContainer}>
+                    <Text style = {styles.subHeaderText}>Select a Clinic</Text>
+                    <View marginVertical={10}>
+                        <Picker
+                            selectedValue = {selectedClinic}
+                            onValueChange = {(clinic) => {setSelectedClinic(clinic)}}
+                            >
+                            {clinicArr.map(item => (
+                            <Picker.Item label = {item.name} value = {item}/>  
+                            ))}
+                        </Picker>
+                    </View>
+                </View>
+                <View style = {{flex:1, marginLeft: 30, marginTop: 30}}> 
+                    <Text style = {styles.subHeaderText}>Clinic Details</Text>
+                    <View
+                    marginTop={10}>
+                        <Text style = {styles.subsubHeaderText}>Address </Text>
+                        <Text style = {styles.detailsText}>{selectedClinic.address}</Text>
+                        <MapView style={styles.map} region={{
+                            latitude: selectedClinic.lat,
+                            longitude: selectedClinic.lon,
+                            latitudeDelta: 0.0032,
+                            longitudeDelta: 0.0032,
+                            scrollEnabled: false,
+                        }}/> 
+                    </View>
+                    <View style = {{flex: 0.25, marginTop: 20}}>
+                        <View style = {{flex:0, marginTop:5}}>
+                            <Text style = {styles.subsubHeaderText}>Email </Text>
+                            <Text style = {styles.detailsText}>{selectedClinic.email}</Text>
+                        </View>
+                        <View style = {{flex:0, marginTop:10}}>
+                            <Text style = {styles.subsubHeaderText}>Phone </Text>
+                            <Text style = {styles.detailsText}>{selectedClinic.phoneNumber}</Text>
+                        </View>
+                    </View>
+                </View>
+                <View style = {{flex:0.1,justifyContent:"center", alignItems:"center", marginTop:40 }}>
+                    <Button
+                        onPress={() => navigation.navigate("bookConsult2")}
+                        text='Next'/>
                 </View>
             </View>
-            <View style = {{flex:0.25, marginLeft: 30}}>
-                <Text style = {styles.subsubHeaderText} >Contact Details:</Text>
-                <View style = {{flex:0, flexDirection:'row'}}>
-                    <AntDesign name="mail" size={24} color="#5464F8" style = {styles.icon}/>
-                    <Text style = {{marginLeft: 10}}>{selectedClinic.email}</Text>
-                </View>
-                <View style = {{flex:0, flexDirection:'row', marginTop:10}}>
-                    <AntDesign name="phone" size={24} color="#5464F8" style = {styles.icon}/>
-                    <Text style = {{marginLeft: 10}}>{selectedClinic.phoneNumber}</Text>
-                </View>
-            </View>
-            <View style = {{flex:0.1,justifyContent:"center", alignItems:"center" }}>
-                <Button mode = "contained" style = {{backgroundColor: "#5464F8", width:"30%"}} onPress = {() => navigation.navigate("bookConsult2")}>Next</Button>
-            </View>
-        </View>
+        </ScrollView>
     );
 } 
 
 const styles = StyleSheet.create({
     container: {
+        paddingTop: Dimensions.get('screen').height * 0.1,
         flex: 1,
+        backgroundColor: 'white',
     },
     header : {
         flex:0.1,
-        marginTop:30,
-        alignItems:"center"
+        marginLeft:30,
     },
     selectClinicContainer : {
-        flex : 0.15,
+        paddingTop: 20,
+        flex : 0.5,
         width:"80%",
         marginLeft:30,
     },
     headerText: {
         fontSize: 32,
-        fontWeight: 'bold'
+        fontFamily:'roboto-bold'
     },
     subHeaderText: {
-        fontSize:20,
-        fontWeight: 'bold'
+        fontSize:25,
+        fontFamily:'roboto-bold'
     },
     subsubHeaderText : {
+        fontFamily:'roboto-light',
         fontSize:16,
-        marginBottom: 10
+        marginTop: 10,
+        marginBottom: 5,
+    },
+    detailsText:{
+        fontFamily: 'roboto-regular',
+        fontSize: 16,  
     },
     icon: {
         color:"#2329D6",
         padding:0
     },
     map : {
-        width: "90%",
-        height: "80%"
-    }
+        width: Dimensions.get('screen').width * 0.8,
+        height: Dimensions.get('screen').height * 0.2,
+        borderRadius: 15,
+        marginTop: 10
+    },
 });
 
 export default bookConsult1;

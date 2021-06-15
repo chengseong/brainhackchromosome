@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Button} from 'react-native-paper';
-import {View, Text, StyleSheet, TextInput} from 'react-native'
+import {View, Text, StyleSheet, TextInput, Dimensions, TouchableWithoutFeedback, Keyboard} from 'react-native'
 import { AntDesign } from '@expo/vector-icons'; 
 
 
@@ -20,8 +20,9 @@ function registrationPage({navigation}) {
     }
 
     return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style = {styles.container}> 
-                <View style = {{flex : 0.3, marginTop: 40, marginLeft: 20, marginRight:20, alignItems:'center'}}>
+                <View style = {{flex : 0.2, marginLeft: 20, marginRight:20, alignItems:'center'}}>
                     <Text style = {{fontSize: 40, color: '#5969FE', textAlign:'center', fontFamily: 'roboto-light'}}>Sign up with us</Text>    
                 </View>
                 <View style = {styles.textContainer}>
@@ -47,30 +48,29 @@ function registrationPage({navigation}) {
                     <TextInput placeholder = "Phone Number" style = {styles.inputFields} value = {phoneNumber} onChangeText = {input => setPhoneNumber(input)}></TextInput>
                 </View>
                 <View style = {{flex:0.3, justifyContent:"center"}}>
-                    <Button mode = "contained" style = {{backgroundColor: "#5464F8"}} onPress = {() => registerAccount()}>Register </Button>
+                    <Button mode = "contained" style = {{backgroundColor: "#5464F8", borderRadius:25}} onPress = {() => registerAccount()}>Register </Button>
                 </View>
             </View>
+        </TouchableWithoutFeedback>
     );
 } 
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingTop: Dimensions.get('screen').height * 0.13,
         justifyContent : 'center',
         alignItems : 'center',
     },
     inputFields : {
-        marginTop:10,
         flex:1,
         fontSize: 20
     },
     textContainer : {
-        flex: 0.13, 
+        flex: 0.1, 
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop:0,
-        marginBottom:0,
     },
     icon: {
         padding:20,
