@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Button} from 'react-native-paper';
 import {View, Text, StyleSheet, TextInput} from 'react-native'
 import { AntDesign } from '@expo/vector-icons'; 
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+
 
 function registrationPage({navigation}) {
     const [userName, setUserName] = React.useState('')
@@ -12,7 +12,11 @@ function registrationPage({navigation}) {
     const [phoneNumber, setPhoneNumber] = React.useState('')
     
     function registerAccount() {
-        console.log("Register")
+        if (password != password) {
+            return 
+        } else {
+            
+        }
     }
 
     return (
@@ -30,7 +34,9 @@ function registrationPage({navigation}) {
                 </View>
                 <View style = {styles.textContainer}>
                     <AntDesign name="lock" size={32} color="#5464F8" style = {styles.icon}/>
-                    <TextInput placeholder = "Confirm Password" style = {styles.inputFields} value = {confirmPassword} onChangeText = {input => setConfirmPassword(input)}></TextInput>
+                    <TextInput placeholder = "Confirm Password" style = {styles.inputFields} value = {confirmPassword} secureTextEntry = {true} onChangeText = {input => setConfirmPassword(input)}></TextInput>
+                </View>
+                <View>{password != confirmPassword && <Text style = {{color:"red"}}>Please ensure both passwords are the same</Text>}
                 </View>
                 <View style = {styles.textContainer}>
                     <AntDesign name="mail" size={32} color="#5464F8" style = {styles.icon}/>
@@ -69,7 +75,7 @@ const styles = StyleSheet.create({
     icon: {
         padding:20,
         marginLeft:10,
-        color:"#2329D6"
+        color:"#2329D6",
     }
 });
 

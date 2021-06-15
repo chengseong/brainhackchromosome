@@ -11,6 +11,7 @@ import HomeStack from './routes/home.js';
 import ComponentStack from './routes/component.js'
 import loginStack from './routes/login.js';
 
+import Consult from './components/bookConsult2.js'
 import Login from './components/loginPage.js'
 
 const Drawer = createDrawerNavigator();
@@ -18,11 +19,7 @@ const Drawer = createDrawerNavigator();
 export default function App() {
   return (
     <PaperProvider>
-      <NavigationContainer> 
-        <Drawer.Navigator initialRouteName = "loginStack">
-          <Drawer.Screen name = "HomeStack" component = {loginStack}></Drawer.Screen>
-        </Drawer.Navigator>
-      </NavigationContainer>
+      <Consult />
     </PaperProvider>
   );
 }
