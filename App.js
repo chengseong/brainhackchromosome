@@ -2,13 +2,17 @@ import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
 import * as Font from 'expo-font';
 import { StyleSheet, Text, View } from 'react-native';
+
 import AppLoading from 'expo-app-loading';
 import { NavigationContainer  } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 
+
 import HomeStack from './routes/home.js';
 import ComponentStack from './routes/component.js'
+import loginStack from './routes/login.js';
+
 
 const getFonts = () => Font.loadAsync({
   'roboto-regular': require('./assets/fonts/Roboto/Roboto-Regular.ttf'),
@@ -16,9 +20,11 @@ const getFonts = () => Font.loadAsync({
   'roboto-bold': require('./assets/fonts/Roboto/Roboto-Bold.ttf'),
 })
 
+
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+
   const [fontsLoaded, setFontsLoaded] = useState(false);
   
   if (fontsLoaded) {
