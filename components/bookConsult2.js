@@ -1,8 +1,9 @@
 import * as React from 'react';
 import {View, Text, StyleSheet, Dimensions, ScrollView} from 'react-native';
 import DatePicker from 'react-native-modern-datepicker';
-import { getToday, getFormatedDate } from 'react-native-modern-datepicker';
+import { getToday } from 'react-native-modern-datepicker';
 import {Button} from 'react-native-paper';
+
 
 function bookConsult2() {
     const [date, setDate] = React.useState(new Date())
