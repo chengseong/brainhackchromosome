@@ -4,13 +4,29 @@ import {View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard} f
 import { AntDesign } from '@expo/vector-icons'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { Dimensions } from 'react-native';
+import axios from 'axios';
+import { loginContext } from '../shared/loginContext.js';
+
+
+
 
 function loginPage({navigation}) {
-    const [userName, setUserName] = React.useState('')
-    const [password, setPassword] = React.useState('')
+    const [userName, setUserName] = React.useState('');
+    const [password, setPassword] = React.useState('');
+    const {setLoggedIn, setUserID} = React.useContext(loginContext);
 
     function goToRegistration() {
         navigation.navigate("registrationPage")
+    }
+
+    function logIn() {
+        axios.get(`http://localhost:3000/api/auth/login/${userName}/${password}`).then((res) => {
+            if (res.status == 200) {
+                console.log(true);
+                setUserID(res.data.userId)
+                setLoggedIn(true)
+            }
+        })
     }
 
     return (
@@ -28,7 +44,8 @@ function loginPage({navigation}) {
                     <TextInput placeholder = "Password" style = {styles.inputFields} value = {password} secureTextEntry = {true} onChangeText = {input => setPassword(input)}></TextInput>
                 </View>
                 <View style = {{flex: 0.5, alignItens:'center', marginTop : 60}}>
-                    <Button mode = "contained" onPress = {() => console.log(userName, password)} style = {{marginTop:50, backgroundColor:"#5464F8", borderRadius:15}}>Login</Button>
+                    <Button mode = "contained" onPress = {() => logIn()} style = {{marginTop:50, backgroundColor:"#5464F8", borderRadius:15}}>Login</Button>
+
                 </View>
                 <View style = {{flex: 0.5, alignItens:'center'}}>
                     <Text>Don't have an account yet? Sign up <Text onPress = {() => goToRegistration()} style = {{color: 'blue'}}>here</Text>.</Text>

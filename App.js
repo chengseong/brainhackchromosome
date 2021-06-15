@@ -13,6 +13,8 @@ import CalendarStack from './routes/calenderStack.js'
 import HomeStack from './routes/home.js';
 import loginStack from './routes/login.js';
 import { createStackNavigator } from '@react-navigation/stack';
+import { loginContext } from './shared/loginContext.js';
+import { userIDContext } from './shared/userContext.js';
 
 
 const getFonts = () => Font.loadAsync({
@@ -26,13 +28,15 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator()
 
 export default function App() {
-
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(true)
+  const [loggedIn, setLoggedIn] = useState(false)
+  const [userID, setUserID] = useState('')
   
   if (fontsLoaded) {
     if (loggedIn) {
       return (
+
+      <userIDContext.Provider value = {userID}>
       <NavigationContainer> 
 
         <Tab.Navigator
@@ -64,14 +68,18 @@ export default function App() {
           <Tab.Screen name = "Calendar" component = {CalendarStack} />
         </Tab.Navigator>
       </NavigationContainer>
+      </userIDContext.Provider>
+
       )
     } else {
       return (
+        <loginContext.Provider value = {{setLoggedIn, setUserID}}>
         <NavigationContainer> 
           <Stack.Navigator screenOptions = {{headerShown: false}}>
             <Stack.Screen name = "login" component = {loginStack} />
           </Stack.Navigator>
         </NavigationContainer>
+        </loginContext.Provider>
       )
     }
   } else {
