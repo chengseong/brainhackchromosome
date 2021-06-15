@@ -15,7 +15,7 @@ function loginPage({navigation}) {
     return (
             <View style = {styles.container}> 
                 <View style = {{flex : 0.8, marginTop: 80, marginLeft: 20, marginRight:20, alignItems:'center'}}>
-                    <Text style = {{fontSize: 40, color: '#5969FE', textAlign:'center'}}>Welcome to Tele Consult</Text>    
+                    <Text style = {{fontSize: 40, color: '#5969FE', textAlign:'center', fontFamily: 'roboto-light'}}>Welcome to Tele Consult</Text>    
                 </View>
                 <View style = {styles.textContainer}>
                     <AntDesign name="user" size={32} color="#5464F8" style = {styles.icon}/>

@@ -3,7 +3,7 @@ import { Button, View, Text, StyleSheet, ScrollView } from 'react-native';
 import MapView from 'react-native-maps';
 import { Ionicons, AntDesign } from '@expo/vector-icons'; 
 
-function bookConsult3() {
+function bookConsult3({navigation}) {
     return (
         <ScrollView style = {{flexGrow: 1}}>
             <View style = {styles.container}> 

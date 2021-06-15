@@ -5,7 +5,7 @@ import { AntDesign } from '@expo/vector-icons';
 import {Button} from 'react-native-paper';
 import MapView from 'react-native-maps';
 
-function bookConsult1() {
+function bookConsult1({navigation}) {
     //To pull from backend
     const [clinicArr, setClinicArr] = React.useState([
         {name: "Clinic 1", address : "TestAddress1", email : "123@gmail.com", phoneNumber:"88888888", lat: 1.3214 , lon: 103.8458},
@@ -54,7 +54,7 @@ function bookConsult1() {
                 </View>
             </View>
             <View style = {{flex:0.1,justifyContent:"center", alignItems:"center" }}>
-                <Button mode = "contained" style = {{backgroundColor: "#5464F8", width:"30%"}}>Next</Button>
+                <Button mode = "contained" style = {{backgroundColor: "#5464F8", width:"30%"}} onPress = {() => navigation.navigate("bookConsult2")}>Next</Button>
             </View>
         </View>
     );

@@ -22,7 +22,7 @@ function registrationPage({navigation}) {
     return (
             <View style = {styles.container}> 
                 <View style = {{flex : 0.3, marginTop: 40, marginLeft: 20, marginRight:20, alignItems:'center'}}>
-                    <Text style = {{fontSize: 40, color: '#5969FE', textAlign:'center'}}>Sign up with us</Text>    
+                    <Text style = {{fontSize: 40, color: '#5969FE', textAlign:'center', fontFamily: 'roboto-light'}}>Sign up with us</Text>    
                 </View>
                 <View style = {styles.textContainer}>
                     <AntDesign name="user" size={32} color="#5464F8" style = {styles.icon}/>

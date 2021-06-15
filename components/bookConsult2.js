@@ -6,7 +6,7 @@ import {Picker} from '@react-native-picker/picker';
 import {Button} from 'react-native-paper';
 
 
-function bookConsult2() {
+function bookConsult2({navigation}) {
     const timeSlotArr = ["2.30pm - 3.00pm", "3.00pm - 3.30pm"] //Need to pull api from clinic and date after date selected 
     const currDate = getToday().replace("/", "-").replace("/", "-")
 
@@ -52,7 +52,7 @@ function bookConsult2() {
                 <TextInput value = {description} onChangeText = {(text) => setDescription(text)}/>
             </View>}
             <View style = {{flex:0.1, alignItems:'center', justifyContent:'center', marginTop:30}}>
-                <Button mode = "contained" onPress = {() => {console.log(date); console.log(selectedTime); console.log(description)}}>Next</Button>
+                <Button mode = "contained" onPress = {() => {navigation.navigate("bookConsult3")}}>Next</Button>
             </View>
         </View>
         </ScrollView>

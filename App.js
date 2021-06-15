@@ -2,16 +2,17 @@ import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
 import * as Font from 'expo-font';
 import { StyleSheet, Text, View } from 'react-native';
+import { Ionicons  } from '@expo/vector-icons';
 
 import AppLoading from 'expo-app-loading';
 import { NavigationContainer  } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 
-
+import CalendarStack from './routes/calenderStack.js'
 import HomeStack from './routes/home.js';
-import ComponentStack from './routes/component.js'
 import loginStack from './routes/login.js';
+import { createStackNavigator } from '@react-navigation/stack';
 
 
 const getFonts = () => Font.loadAsync({
@@ -22,20 +23,49 @@ const getFonts = () => Font.loadAsync({
 
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator()
 
 export default function App() {
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(true)
   
   if (fontsLoaded) {
-    return (
+    if (loggedIn) {
+      return (
       <NavigationContainer> 
-        <Tab.Navigator initialRouteName = "Home">
-          <Tab.Screen name="HomeStack" component={HomeStack} />
-          <Tab.Screen name="ComponentStack" component={ComponentStack} />
+        <Tab.Navigator initialRouteName = "Home" screenOptions = {({route}) => ({
+            tabBarIcon : ({focused, size, color}) => {
+              let iconName;
+              if (route.name === 'Calendar') {
+                iconName = focused
+                ? 'ios-information-circle'
+                : 'ios-information-circle-outline';
+              } else {
+                iconName = focused ? 'ios-list-box' : 'ios-list';
+              }
+              return <Ionicons  icon = {iconName} size = {size} color = {color}/>;
+            },
+          })}
+          tabBarOptions={{
+            activeTintColor: '#5464F8',
+            inactiveTintColor: 'gray',
+          }}
+          >
+          <Tab.Screen name = "Calendar" component = {CalendarStack} />
+          <Tab.Screen name="Home" component={HomeStack} />
         </Tab.Navigator>
       </NavigationContainer>
-    );
+      )
+    } else {
+      return (
+        <NavigationContainer> 
+          <Stack.Navigator screenOptions = {{headerShown: false}}>
+            <Stack.Screen name = "login" component = {loginStack} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      )
+    }
   } else {
     return (
       <AppLoading

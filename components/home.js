@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
 import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Modal, TouchableWithoutFeedback, Keyboard,} from 'react-native';
+import {Button} from 'react-native-paper'
 import { EvilIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
 import MapView from 'react-native-maps';
 import Card from '../shared/card';
 
-export default function Home() {
+export default function Home({navigation}) {
     const [modalVisible, setModalVisible] = useState(false);
 
     const toggleModal = () => setModalVisible(true);
@@ -26,7 +27,7 @@ export default function Home() {
             <Modal
                 animationType='slide'
                 visible={modalVisible}
-                transparent='true'>
+                transparent={true}>
                 <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
                     <View style={styles.modalContainer}>
                         <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
@@ -91,6 +92,8 @@ export default function Home() {
                             </Card>
                         </TouchableOpacity>
                     )}/>
+            </View>
+            <View style = {{alignItems:"center"}}><Button mode = "contained" onPress = {() => navigation.navigate("bookConsult1")}>Book an appointment</Button>
             </View>
         </View>
     );
