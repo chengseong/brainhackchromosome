@@ -8,12 +8,14 @@ import { Dimensions } from 'react-native';
 import MapView from 'react-native-maps';
 import Card from '../shared/card';
 import { Feather } from '@expo/vector-icons';
+import { userIDContext } from '../shared/userContext';
 
 
 export default function Home({navigation}) {
     const [appointmentsVisible, setAppointmentsVisible] = useState(false);
     const [notificationsVisible, setNotificationsVisible] = useState(false);
     const [searchText, setSearchText] = useState('');
+    const userID = React.useContext(userIDContext);
 
     const appointments = [
         {clinicName: 'ABC clinic', doctor: 'Dr Ang Koon Hian', date: '22nd May 2021', time: '10:30 - 11:00', key:'1'},
@@ -152,9 +154,9 @@ export default function Home({navigation}) {
                     </View>
                 </TouchableWithoutFeedback>
             </Modal>
-            {/*Appointment Info Modal End*/}
+            {/*Appointment Info Modal End */}
 
-
+                                                    
             <View style = {{alignItems:"center"}}><Button mode = "contained" onPress = {() => navigation.navigate("bookConsult1")}>Book an appointment</Button>
             </View>
 

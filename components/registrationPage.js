@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Button} from 'react-native-paper';
 import {View, Text, StyleSheet, TextInput} from 'react-native'
+import axios from 'axios';
 import { AntDesign } from '@expo/vector-icons'; 
 
 
@@ -14,8 +15,21 @@ function registrationPage({navigation}) {
     function registerAccount() {
         if (password != password) {
             return 
+        } if (emailAddress.length == 0) {
+            return
+        } if (phoneNumber.length < 8) {
+            return 
         } else {
-            
+            const registrationJson = {
+                "username" : userName,
+                "email":emailAddress,
+                "password" : password,
+                "phoneNumber" : phoneNumber    
+            };
+            axios.post("http://localhost:3000/api/auth/register", registrationJson).then((response)  => {
+                console.log(response);
+                navigation.navigate("loginPage") 
+            }).catch(err => {console.log(err)})
         }
     }
 
