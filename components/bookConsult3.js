@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     header : {
         flex:0.20,
         marginLeft:30,
+        marginRight:30,
     },
     headerText : {
         fontSize: 32,
