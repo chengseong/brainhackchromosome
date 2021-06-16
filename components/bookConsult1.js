@@ -70,8 +70,9 @@ function bookConsult1({navigation}) {
                     <Text style = {styles.subHeaderText}>Clinic Details</Text>
                     <View
                     marginTop={10}>
-                        <Text style = {styles.subsubHeaderText}>Address </Text>
-                        <Text style = {styles.detailsText}>Test address</Text>
+                        <Text style = {styles.subsubHeaderText}>Address</Text>
+                        <Text style = {styles.detailsText}>{selectedClinic.address.split(", ")[0]}</Text>
+                        <Text style = {styles.detailsText}>{selectedClinic.address.split(", ")[1]}</Text>
                         <MapView style={styles.map} 
                         scrollEnabled = {false}
                         region={{

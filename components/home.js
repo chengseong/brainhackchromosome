@@ -80,7 +80,7 @@ export default function Home({navigation}) {
         const deleteJSON = {
             appointmentId: appointmentId
         };
-        axios.delete('http://192.168.86.221:3000/api/appointments/deletePatientAppointments', {data: deleteJSON}).then((res) => {
+        axios.delete('http://192.168.1.10:3000/api/appointments/deletePatientAppointments', {data: deleteJSON}).then((res) => {
             (navigation.dispatch(CommonActions.reset({index:1, routes:[{name: 'Home'}]})))
         })
     }
@@ -235,7 +235,10 @@ export default function Home({navigation}) {
                                             alignItems='center'
                                             justifyContent='center'>
                                             <TouchableOpacity
-                                                onPress={() => {cancelAppointment(toShow._id)}}
+                                                onPress={() => {
+                                                    cancelAppointment(toShow._id);
+                                                    setAppointmentsVisible(false);
+                                                }}
                                                 style={styles.button}>
                                                     <View>
                                                         <Text style={styles.cancelText}>Cancel Appointment</Text>
@@ -343,6 +346,7 @@ const styles = StyleSheet.create({
     },
     modalView: {
         backgroundColor: "white",
+        paddingTop: 10,
         borderRadius: 20,
         borderWidth: 1,
         borderColor: '#dddd',

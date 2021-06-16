@@ -72,14 +72,13 @@ function bookConsult3({route, navigation}) {
                     </View>
 
                     <Text style = {{marginTop:20, fontFamily:'roboto-regular'}}>You will be reminded 15 minutes before your consultation.</Text>
-                    <Button onPress = {() => (navigation.dispatch(CommonActions.reset({index:1, routes:[{name: 'Home'}]})))}  text = "Return Home"></Button>
-                    
+                
                 </View>      
                 <View
                     marginTop={20}
                     flexDirection='row'
                     justifyContent='center'>
-                    <Button onPress = {() => (navigation.dispatch(StackActions.popToTop()))}  text = "Return Home"></Button>
+                    <Button onPress = {() => (navigation.dispatch(CommonActions.reset({index:1, routes:[{name: 'Home'}]})))}  text = "Return Home"></Button>
                 </View>
             </View>
         </ScrollView>
