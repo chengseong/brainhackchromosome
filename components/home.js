@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 
-import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Modal, TouchableWithoutFeedback, Keyboard,} from 'react-native';
+import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Modal, TouchableWithoutFeedback, Keyboard, ActivityIndicator} from 'react-native';
 import { EvilIcons, Ionicons, } from '@expo/vector-icons';
 
 import { Dimensions } from 'react-native';
@@ -9,6 +9,8 @@ import Card from '../shared/card';
 import { Feather } from '@expo/vector-icons';
 import Button from '../shared/button';
 import { userIDContext } from '../shared/userContext';
+import axios from 'axios';
+import AppLoading from 'expo-app-loading';
 
 
 
@@ -16,159 +18,203 @@ export default function Home({navigation}) {
     const [appointmentsVisible, setAppointmentsVisible] = useState(false);
     const [notificationsVisible, setNotificationsVisible] = useState(false);
     const [searchText, setSearchText] = useState('');
-    const userID = React.useContext(userIDContext);
-
-    const appointments = [
-        {clinicName: 'ABC clinic', doctor: 'Dr Ang Koon Hian', date: '22nd May 2021', time: '10:30 - 11:00', key:'1'},
-        {clinicName: 'ABC clinic', doctor: 'Dr Ang Koon Hian', date: '22nd May 2021', time: '10:30 - 11:00', key:'2'},
-        {clinicName: 'ABC clinic', doctor: 'Dr Ang Koon Hian', date: '22nd May 2021', time: '10:30 - 11:00', key:'3'},
-    ]
+    const userID = useContext(userIDContext);
 
     const [toShow, setToShow] = useState({});
-
+    const [clinicToShow, setClinicToShow] = useState({});
     const showItem = (item) => setToShow(item);
 
-    return (
-        <View style = {styles.container}> 
-            <View style = {styles.header}>
-                <View flex={2}>
-                    <Text style = {styles.name}>Placeholder Name</Text>
-                </View>
-                <View flex={1} flexDirection='row' justifyContent='flex-end' paddingRight={40}>
-                    <Ionicons
-                        name="notifications-outline"
-                        size={24}
-                        color='#0009FF'
-                        onPress={() => setNotificationsVisible(true)} />
-                </View>
-            </View>
+    const [appointments, setAppointments] = useState({});
+    const [appointmentsLoaded, setAppointmentsLoaded] = useState(false);
+    const [clinics, setClinics] = useState({});
 
-            {/*Notification Modal Start*/}
-            <Modal
-                animationType='fade'
-                visible={notificationsVisible}
-                transparent={true}>
-                <TouchableWithoutFeedback onPress={() => setNotificationsVisible(false)}>
-                    <View style={styles.modalContainer}>
-                        <TouchableWithoutFeedback onPress={() => setNotificationsVisible(true)}>
-                            <View style={{...styles.modalView, ...styles.notificationsModal}}>
-                            <FlatList
-                                paddingTop={10}
-                                data={appointments}
-                                renderItem={({item}) => (
-                                    <View style={styles.notificationStyle}> 
-                                        <View justifyContent='center'>
-                                            <Feather
-                                                name="alert-circle"
-                                                size={12}
-                                                color='#0009FF' />
-                                        </View>
-                                        <View 
-                                            paddingTop={15}
-                                            paddingLeft={20}
-                                            paddingRight={20}
-                                            alignItems='center'>
-                                            <Text>The following appointment has been confirmed</Text>
-                                            <Text></Text>
+    function getAppointments(){
+        axios.get(`http://192.168.1.10:3000/api/appointments/getPatientAppointments/60c77acbb9dcba875c0d5ca5`).then((res) => {
+            setAppointments(res.data);
+        }).catch(err => {
+            console.log(err)})
+    }
+    
+    function getClinics(){
+        axios.get(`http://192.168.1.10:3000/api/authClinic/allClinics`).then((res) => {
+            setClinics(res.data);
+        }).catch(err => {
+            console.log(err)})
+    }
+    
+    function preLoad() {
+        getClinics();
+        getAppointments();
+    }
+
+    function findClinic(clinicId) {
+        let clinic;
+        for (c in clinics){
+            if (clinics[c]._id == '60c8d1c98f4682c9863b6e3b') {
+                clinic = clinics[c];
+                break;
+            }
+        } 
+        return clinic;
+    }
+
+    if(appointmentsLoaded) {
+        return (
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style = {styles.container} > 
+                    <View style = {styles.header}>
+                        <View flex={2}>
+                            <Text style = {styles.name}>Placeholder Name</Text>
+                        </View>
+                        <View flex={1} flexDirection='row' justifyContent='flex-end' paddingRight={40}>
+                            <Ionicons
+                                name="notifications-outline"
+                                size={24}
+                                color='#0009FF'
+                                onPress={() => setNotificationsVisible(true)} />
+                        </View>
+                    </View>
+
+                    {/*Notification Modal Start*/}
+                    <Modal
+                        animationType='fade'
+                        visible={notificationsVisible}
+                        transparent={true}>
+                        <TouchableWithoutFeedback onPress={() => setNotificationsVisible(false)}>
+                            <View style={styles.modalContainer}>
+                                <TouchableWithoutFeedback onPress={() => setNotificationsVisible(true)}>
+                                    <View style={{...styles.modalView, ...styles.notificationsModal}}>
+                                    <FlatList
+                                        paddingTop={10}
+                                        data={appointments}
+                                        renderItem={({item}) => (
+                                            <View style={styles.notificationStyle}> 
+                                                <View justifyContent='center'>
+                                                    <Feather
+                                                        name="alert-circle"
+                                                        size={12}
+                                                        color='#0009FF' />
+                                                </View>
+                                                <View 
+                                                    paddingTop={15}
+                                                    paddingLeft={20}
+                                                    paddingRight={20}
+                                                    alignItems='center'>
+                                                    <Text>The following appointment has been confirmed</Text>
+                                                    <Text></Text>
+                                                </View>
+                                            </View>
+                                    )}/>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </Modal>
+                    {/*Notification Modal End*/}
+
+                    {/* Subheader */}
+                    <View style = {styles.subheader}>
+                        <Text style = {styles.search}>Search</Text>
+                        <Text style = {styles.recentAppointments}>Recent</Text>
+                        <Text style = {styles.recentAppointments}>Appointments</Text>
+                        <View style = {styles.searchBar}>
+                            <EvilIcons
+                            name = 'search'
+                            size = {24}
+                            color = '#5464F8'/>
+                            <TextInput 
+                                style = {styles.input}
+                                onChangeText = {(val) => setSearchText(val)}
+                            />
+                        </View>
+                    </View>
+
+                    {/* Upcoming Appointments Start */}
+                    <View style = {styles.body}>
+                        <Text style = {styles.bodyText}>Upcoming Appointments</Text>
+                        <FlatList
+                            marginTop={10}
+                            data={appointments}
+                            numColumns={2}
+                            renderItem={({item}) => (
+                                <TouchableOpacity onPress={() => {
+                                    showItem(item);
+                                    setClinicToShow(findClinic(item.clinicId));
+                                    setAppointmentsVisible(true);}}>
+                                    <Card>
+                                        <Text style={styles.clinicName}>{findClinic(item.clinicId).clinicName}</Text>
+                                        <Text style={styles.cardText}>{item.doctor}</Text>
+                                        <Text style={styles.cardText}>{item.date}</Text>
+                                        <Text style={styles.timeText}>{item.time}</Text>
+                                        <View style={styles.circle}></View>
+                                    </Card>
+                                </TouchableOpacity>
+                            )}/>
+                    </View>
+
+                    {/* Upcoming Appointments End */}
+
+                    {/*Appointment Info Modal Start*/}
+                    <Modal
+                        animationType='fade'
+                        visible={appointmentsVisible}
+                        transparent={true}>
+                        <TouchableWithoutFeedback onPress={() => setAppointmentsVisible(false)}>
+                            <View style={styles.modalContainer}>
+                                <TouchableWithoutFeedback onPress={() => setAppointmentsVisible(true)}>
+                                    <View style={{...styles.modalView, ...styles.appointmentsModal}}>
+                                        <View paddingTop={20} paddingLeft={20}>
+                                            <Text style={styles.modalTitle}>{clinicToShow.clinicName}</Text>
+                                            <Text style={{...styles.modalDescription, ...styles.modalDoctor}}>{toShow.doctor}</Text>
+                                            <Text style={styles.modalDescription}>{toShow.date}</Text>
+                                            <Text style={styles.modalDescription}>{toShow.time}</Text>
+                                            <Text style={styles.modalDescription}>{toShow.content}</Text>
+                                            <Text style={{...styles.modalDescription, marginTop: 20}}>{clinicToShow.email}</Text>
+                                            <Text style={{...styles.modalDescription, marginTop: 5}}>{clinicToShow.phoneNumber}</Text>
+                                            <Text style={{...styles.modalDescription, marginTop: 20}}>{clinicToShow.address}</Text>
+                                            <MapView 
+                                                style={styles.mapView}
+                                                initialRegion={{
+                                                    latitude: clinicToShow.lat,
+                                                    longitude: clinicToShow.long,
+                                                    latitudeDelta:0.002,
+                                                    longitudeDelta:0.002}}/>
+                                            <TouchableOpacity
+                                                onPress={() => {}}
+                                                style={styles.button}>
+                                                    <View>
+                                                        <Text style={styles.cancelText}>Cancel Appointment</Text>
+                                                    </View>
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
-                            )}/>
+                                </TouchableWithoutFeedback>
                             </View>
                         </TouchableWithoutFeedback>
-                    </View>
-                </TouchableWithoutFeedback>
-            </Modal>
-            {/*Notification Modal End*/}
+                    </Modal>
+                    {/*Appointment Info Modal End */}
 
-            {/* Subheader */}
-            <View style = {styles.subheader}>
-                <Text style = {styles.search}>Search</Text>
-                <Text style = {styles.recentAppointments}>Recent</Text>
-                <Text style = {styles.recentAppointments}>Appointments</Text>
-                <View style = {styles.searchBar}>
-                    <EvilIcons
-                    name = 'search'
-                    size = {24}
-                    color = '#5464F8'/>
-                    <TextInput 
-                        style = {styles.input}
-                        onChangeText = {(val) => setSearchText(val)}
-                    />
+                    <View 
+                        alignItems="center"
+                        flex = {1}
+                        marginTop={10}>
+                        <Button
+                            onPress={() => navigation.navigate("bookConsult1")}
+                            text='Book an appointment'/>
+
+                    </View>
                 </View>
-            </View>
-
-            {/* Upcoming Appointments Start */}
-            <View style = {styles.body}>
-                <Text style = {styles.bodyText}>Upcoming Appointments</Text>
-                <FlatList
-                    paddingTop={10}
-                    data={appointments}
-                    numColumns={2}
-                    renderItem={({item}) => (
-                        <TouchableOpacity onPress={() => {
-                            showItem(item);
-                            setAppointmentsVisible(true);}}>
-                            <Card>
-                                <Text style={styles.clinicName}>{item.clinicName}</Text>
-                                <Text style={styles.cardText}>{item.doctor}</Text>
-                                <Text style={styles.cardText}>{item.date}</Text>
-                                <Text style={styles.timeText}>{item.time}</Text>
-                                <View style={styles.circle}></View>
-                            </Card>
-                        </TouchableOpacity>
-                    )}/>
-            </View>
-
-            {/* Upcoming Appointments End */}
-
-            {/*Appointment Info Modal Start*/}
-            <Modal
-                animationType='fade'
-                visible={appointmentsVisible}
-                transparent={true}>
-                <TouchableWithoutFeedback onPress={() => setAppointmentsVisible(false)}>
-                    <View style={styles.modalContainer}>
-                        <TouchableWithoutFeedback onPress={() => setAppointmentsVisible(true)}>
-                            <View style={{...styles.modalView, ...styles.appointmentsModal}}>
-                                <View paddingTop={20} paddingLeft={20}>
-                                    <Text style={styles.modalTitle}>{toShow.clinicName}</Text>
-                                    <Text style={{...styles.modalDescription, ...styles.modalDoctor}}>{toShow.doctor}</Text>
-                                    <Text style={styles.modalDescription}>{toShow.date}</Text>
-                                    <Text style={styles.modalDescription}>{toShow.time}</Text>
-                                    <MapView 
-                                        style={styles.mapView}
-                                        initialRegion={{
-                                            latitude:1.2966,
-                                            longitude:103.7764,
-                                            latitudeDelta:0.002,
-                                            longitudeDelta:0.002}}/>
-                                    <TouchableOpacity
-                                        onPress={() => {}}
-                                        style={styles.button}>
-                                            <View>
-                                                <Text style={styles.cancelText}>Cancel Appointment</Text>
-                                            </View>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                </TouchableWithoutFeedback>
-            </Modal>
-            {/*Appointment Info Modal End */}
-
-            <View 
-                alignItems="center"
-                flex = {1}
-                marginTop={10}>
-                <Button
-                    onPress={() => navigation.navigate("bookConsult1")}
-                    text='Book an appointment'/>
-
-            </View>
-
-        </View>
-    );
+            </TouchableWithoutFeedback>
+        )
+    } else {
+        return (
+            <AppLoading
+            startAsync={preLoad}
+            onFinish={() => setAppointmentsLoaded(true)}
+            onError={console.warn}
+        />
+        )
+    }
 } 
 
 const styles = StyleSheet.create({
@@ -260,7 +306,7 @@ const styles = StyleSheet.create({
     },
     appointmentsModal: {
         marginLeft: Dimensions.get('screen').width * 0.1,
-        height: Dimensions.get('screen').height * 0.7,
+        height: Dimensions.get('screen').height * 0.6,
         width: Dimensions.get('screen').width * 0.8,
     },
     modalTitle: {
@@ -274,12 +320,15 @@ const styles = StyleSheet.create({
     modalDescription: {
         fontFamily:'roboto-regular',
         fontSize:15,
+        color: '#444444'
     },
     mapView: {
         width:260,
         height:100,
         borderRadius:15,
-        marginTop: 20
+        borderWidth:0.5,
+        marginTop: 10,
+        marginBottom: 30,
     },
     button: {
         width: 220,
