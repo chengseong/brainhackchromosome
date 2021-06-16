@@ -7,7 +7,7 @@ import { Ionicons,  } from '@expo/vector-icons';
 import AppLoading from 'expo-app-loading';
 import { NavigationContainer  } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
+import * as Notifications from 'expo-notifications'
 
 import CalendarStack from './routes/calenderStack.js'
 import HomeStack from './routes/home.js';
@@ -15,7 +15,6 @@ import loginStack from './routes/login.js';
 import { createStackNavigator } from '@react-navigation/stack';
 import { loginContext } from './shared/loginContext.js';
 import { userIDContext } from './shared/userContext.js';
-
 
 const getFonts = () => Font.loadAsync({
   'roboto-regular': require('./assets/fonts/Roboto/Roboto-Regular.ttf'),

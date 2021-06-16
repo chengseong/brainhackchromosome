@@ -73,7 +73,7 @@ function bookConsult2({route, navigation}) {
             consultType : consultType
         }
         console.log(apptData)
-        axios.post("http://192.168.1.10:3000/api/appointments/createAppointments", apptData).then((res) => {navigation.navigate("bookConsult3", apptData)})
+        axios.post("http://192.168.86.221:3000/api/appointments/createAppointments", apptData).then((res) => {navigation.navigate("bookConsult3", apptData)})
     }
     
     

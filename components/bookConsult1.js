@@ -17,7 +17,7 @@ function bookConsult1({navigation}) {
 
     
     React.useEffect(() => {
-        axios.get("http://192.168.1.10:3000/api/authClinic/allClinics").then(response => {
+        axios.get("http://192.168.86.221:3000/api/authClinic/allClinics").then(response => {
             setClinicArr(response.data);
             setSelectedClinic(response.data[0])
             //setDoctorName
