@@ -4,7 +4,7 @@ import MapView from 'react-native-maps';
 import { Ionicons, AntDesign } from '@expo/vector-icons'; 
 import AppLoading from 'expo-app-loading';
 import axios from 'axios'
-import { StackActions } from '@react-navigation/native';
+import { StackActions, CommonActions} from '@react-navigation/native';
 import Button from '../shared/button';
 
 function bookConsult3({route, navigation}) {
@@ -69,7 +69,7 @@ function bookConsult3({route, navigation}) {
                         <Text style = {styles.detailsText}>{clinic.phoneNumber}</Text>
                     </View>
                     <Text style = {{marginVertical:20, fontFamily:'roboto-regular'}}>You will be reminded 15 minutes before your consultation.</Text>
-                    <Button onPress = {() => (navigation.dispatch(StackActions.popToTop()))}  text = "Return Home"></Button>
+                    <Button onPress = {() => (navigation.dispatch(CommonActions.reset({index:1, routes:[{name: 'Home'}]})))}  text = "Return Home"></Button>
                     
                 </View>      
             </View>
