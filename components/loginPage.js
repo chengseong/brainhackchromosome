@@ -20,13 +20,15 @@ function loginPage({navigation}) {
     }
 
     function logIn() {
+
         axios.get(`http://192.168.86.221:3000/api/auth/login/${userName}/${password}`).then((res) => {
             if (res.status == 200) {
                 console.log(true);
                 setUserID(res.data.userId)
                 setLoggedIn(true)
             }
-        })
+        }).catch(err => {
+            console.log(err)})
     }
 
     return (
