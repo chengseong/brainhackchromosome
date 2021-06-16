@@ -29,7 +29,7 @@ function bookConsult2({route, navigation}) {
     const [description, setDescription] = React.useState("")
 
     React.useEffect(() => {
-        axios.get(`http://192.168.86.221:3000/api/appointments/getClinicAppointments/${clinicID}`).then(response => {
+        axios.get(`http://192.168.1.10:3000/api/appointments/getClinicAppointments/${clinicID}`).then(response => {
             setClinicAppts(response.data)
             console.log(clinicAppts)
         }).then(() => setLoaded(true));
