@@ -8,24 +8,14 @@ import Axios from 'axios';
 
 
 export default class AgendaScreen extends Component {
-
-
   
   constructor(props) {
     super(props);
-
     Axios.get("http://192.168.50.189:3000/api/appointments/getPatientAppointments/60c9f3685b9ece621c978a4b").then(
       (response) => {
         console.log(response.data)
         for (var i = 0; i < response.data.length; i++) {
-
           const appointmentDetails = response.data[i] 
-
-          
-
-
-
-
           console.log("date format")
           console.log(appointmentDetails.date)
           Axios.get("http://192.168.50.189:3000/api/authClinic/oneClinic/" + response.data[i].clinicId).then(
