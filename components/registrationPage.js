@@ -26,7 +26,7 @@ function registrationPage({navigation}) {
                 "password" : password,
                 "phoneNumber" : phoneNumber    
             };
-            axios.post("http://localhost:3000/api/auth/register", registrationJson).then((response)  => {
+            axios.post("http://192.168.86.221:3000/api/auth/register", registrationJson).then((response)  => {
                 console.log(response);
                 navigation.navigate("loginPage") 
             }).catch(err => {console.log(err)})

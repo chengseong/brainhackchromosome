@@ -2,9 +2,28 @@ import * as React from 'react';
 import { Button, View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import MapView from 'react-native-maps';
 import { Ionicons, AntDesign } from '@expo/vector-icons'; 
+import AppLoading from 'expo-app-loading';
+import axios from 'axios'
+import { StackActions } from '@react-navigation/native';
 
-function bookConsult3({navigation}) {
-    return (
+function bookConsult3({route, navigation}) {
+    const clinicID = route.params.clinicId;
+    console.log(clinicID)
+    const date = route.params.date
+    const time = route.params.time 
+    const [clinic, setClinicName] = React.useState()
+    const [loaded, setLoaded] = React.useState(false)
+    React.useEffect(() => {
+        axios.get(`http://192.168.86.221:3000/api/authClinic/oneClinic/${clinicID}`).then(response => {
+            console.log(response.data)
+            setClinicName(response.data);
+            setLoaded(true)
+        })
+      }, []);
+
+
+    
+    if (loaded) {return (
         <ScrollView style = {{flexGrow: 1, backgroundColor:'white'}}>
             <View style = {styles.container}> 
                 <View style = {styles.header}><Text style = {styles.headerText}>
@@ -15,23 +34,23 @@ function bookConsult3({navigation}) {
                     <Text style = {{fontSize:24, fontFamily: 'roboto-bold'}}>Appointment Details</Text>
                     <View style = {{flex:1, marginTop:5}}>
                         <Text style = {styles.subHeaderText}>Date</Text>
-                        <Text style = {styles.detailsText}>Thursday, 22 May 2021</Text>
+                        <Text style = {styles.detailsText}>{date}</Text>
                     </View>
                     <View style = {{flex:1, marginTop:5}}>
                         <Text style = {styles.subHeaderText}>Time</Text>
-                        <Text style = {styles.detailsText}>2.30pm - 3.00pm</Text>
+                        <Text style = {styles.detailsText}>{time}</Text>
                     </View>
                 </View>
                 <View style = {{flex:0.2, marginTop:50, marginLeft:30}}> 
-                    <Text style = {{fontSize:24, fontFamily: 'roboto-bold'}}>ABC Clinic </Text>
+                    <Text style = {{fontSize:24, fontFamily: 'roboto-bold'}}>{clinic.clinicName}</Text>
                 </View>
                 <View style = {{flex:0.2, marginLeft:30}}> 
                     <Text style = {styles.subHeaderText}>Address</Text> 
-                    <Text style = {styles.detailsText}>123Address</Text>
+                    <Text style = {styles.detailsText}>{clinic.address}</Text>
                     <View style = {{flex:0.5}}>
                     <MapView style={styles.map} region={{
-                        latitude: 1.3214,
-                        longitude: 103.8458,
+                        latitude: parseFloat(clinic.lat),
+                        longitude: parseFloat(clinic.long),
                         latitudeDelta: 0.0032,
                         longitudeDelta: 0.0032,
                         }}/> 
@@ -40,17 +59,23 @@ function bookConsult3({navigation}) {
                 <View style = {{flex:0.2, marginLeft: 30, marginTop: 10}}> 
                     <View style = {{flex:0, marginTop:5, }}>
                         <Text style = {styles.subHeaderText}>Email</Text> 
-                        <Text style = {styles.detailsText}>123@gmail.com</Text>
+                        <Text style = {styles.detailsText}>{clinic.email}</Text>
                     </View>
                     <View style = {{flex:0, marginTop:10}}>
                         <Text style = {styles.subHeaderText}>Phone</Text> 
-                        <Text style = {styles.detailsText}>88888888</Text>
+                        <Text style = {styles.detailsText}>{clinic.phoneNumber}</Text>
                     </View>
                     <Text style = {{marginVertical:20, fontFamily:'roboto-regular'}}>You will be reminded 15 minutes before your consultation.</Text>
+                    <View style = {{flex:0, marginTop:10, marginBottom:20, justifyContent:'center', alignItems:'center'}}><Button onPress = {() => (navigation.dispatch(StackActions.popToTop()))} title = "Return Home"></Button></View>
+                    
                 </View>      
             </View>
         </ScrollView>
-    );
+    );} else {
+        return <AppLoading 
+        onFinish={() => setLoaded(true)}/>
+    }
+    
 } 
 
 const styles = StyleSheet.create({

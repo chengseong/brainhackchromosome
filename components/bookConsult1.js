@@ -1,22 +1,34 @@
 import * as React from 'react';
 import {View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { AntDesign } from '@expo/vector-icons'; 
 import MapView from 'react-native-maps';
 import Button from '../shared/button';
+import AppLoading from 'expo-app-loading';
+import axios from 'axios'
 
 
 function bookConsult1({navigation}) {
     //To pull from backend
-    const [clinicArr, setClinicArr] = React.useState([
+    const [clinicArr, setClinicArr] = React.useState([])
+    const [selectedClinic, setSelectedClinic] = React.useState({})
+    const [clinicLoaded, setClinicLoaded] = React.useState(false)
+
+    React.useEffect(() => {
+        axios.get("http://192.168.86.221:3000/api/authClinic/allClinics").then(response => {
+            setClinicArr(response.data);
+            setSelectedClinic(response.data[0])
+        }).then(() => setClinicLoaded(true));
+      }, []);
+    
+    /*const [clinicArr, setClinicArr] = React.useState([
         {name: "Clinic 1", address : "TestAddress1", email : "123@gmail.com", phoneNumber:"88888888", lat: 1.3214 , lon: 103.8458},
         {name: "Clinic 2", address : "TestAddress2", email : "456@gmail.com", phoneNumber:"77777777", lat: 1.3338 , lon: 103.7453},
         {name: "Clinic 3", address : "TestAddress3", email : "789@gmail.com", phoneNumber:"66666666", lat: 1.3402 , lon: 103.9496},
-    ])
-    const [selectedClinic, setSelectedClinic] = React.useState(clinicArr[0])
+    ])*/
 
-
-    return (
+    
+    if (clinicLoaded) {
+        return (
         <ScrollView backgroundColor='white' style = {{flexGrow:1}}>
             <View style = {styles.container}>
             <View style = {styles.header}>
@@ -29,8 +41,8 @@ function bookConsult1({navigation}) {
                             selectedValue = {selectedClinic}
                             onValueChange = {(clinic) => {setSelectedClinic(clinic)}}
                             >
-                            {clinicArr.map(item => (
-                            <Picker.Item label = {item.name} value = {item}/>  
+                            {clinicArr.map((item) => (
+                            <Picker.Item label = {item.clinicName} value = {item} key = {item.address}/>  
                             ))}
                         </Picker>
                     </View>
@@ -40,10 +52,10 @@ function bookConsult1({navigation}) {
                     <View
                     marginTop={10}>
                         <Text style = {styles.subsubHeaderText}>Address </Text>
-                        <Text style = {styles.detailsText}>{selectedClinic.address}</Text>
+                        <Text style = {styles.detailsText}>Test address</Text>
                         <MapView style={styles.map} region={{
-                            latitude: selectedClinic.lat,
-                            longitude: selectedClinic.lon,
+                            latitude: parseFloat(selectedClinic.lat),
+                            longitude: parseFloat(selectedClinic.long),
                             latitudeDelta: 0.0032,
                             longitudeDelta: 0.0032,
                             scrollEnabled: false,
@@ -62,12 +74,15 @@ function bookConsult1({navigation}) {
                 </View>
                 <View style = {{flex:0.1,justifyContent:"center", alignItems:"center", marginTop:40 }}>
                     <Button
-                        onPress={() => navigation.navigate("bookConsult2")}
+                        onPress={() => navigation.navigate("bookConsult2", {clinicID : selectedClinic._id})}
                         text='Next'/>
                 </View>
             </View>
         </ScrollView>
-    );
+    )} else {
+        return <AppLoading 
+        onFinish={() => setClinicLoaded(true)}/>
+    }
 } 
 
 const styles = StyleSheet.create({
