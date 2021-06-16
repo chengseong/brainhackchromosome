@@ -3,6 +3,7 @@ import * as React from 'react';
 import {View, Text, StyleSheet, TextInput, Dimensions, TouchableWithoutFeedback, Keyboard, TouchableOpacity} from 'react-native'
 import axios from 'axios';
 import { AntDesign } from '@expo/vector-icons'; 
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 
 
 function registrationPage({navigation}) {
@@ -27,7 +28,7 @@ function registrationPage({navigation}) {
                 "phoneNumber" : phoneNumber    
             };
 
-            axios.post("http://192.168.86.221:3000/api/auth/register", registrationJson).then((response)  => {
+            axios.post("http://192.168.1.10:3000/api/auth/register", registrationJson).then((response)  => {
 
                 console.log(response);
                 navigation.navigate("loginPage") 
@@ -38,31 +39,65 @@ function registrationPage({navigation}) {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style = {styles.container}> 
+            <KeyboardAwareScrollView 
+                scrollEnabled={false}
+                contentContainerStyle = {styles.container}> 
                 <View style = {{flex : 0.2, marginLeft: 30}}>
                     <Text style = {{fontSize: 40, color: '#5969FE', fontFamily: 'roboto-light'}}>Sign up with us</Text>    
                 </View>
                 <View style = {styles.textContainer}>
                     <AntDesign name="user" size={32} color="#5464F8" style = {styles.icon}/>
-                    <TextInput placeholder = "Username" style = {styles.inputFields} value = {userName} onChangeText = {input => setUserName(input)}></TextInput>
+                    <TextInput 
+                        placeholder = "Username" 
+                        style = {styles.inputFields} 
+                        value = {userName}
+                        autoCorrect = {false}
+                        autoCapitalize = 'none'
+                        onChangeText = {input => setUserName(input)}></TextInput>
                 </View>
                 <View style = {styles.textContainer}>
                     <AntDesign name="lock" size={32} color="#5464F8" style = {styles.icon}/>
-                    <TextInput placeholder = "Enter Password" style = {styles.inputFields} value = {password} onChangeText = {input => setPassword(input)}></TextInput>
+                    <TextInput 
+                        placeholder = "Enter Password" 
+                        style = {styles.inputFields} 
+                        value = {password} 
+                        secureTextEntry = {true} 
+                        autoCorrect = {false}
+                        autoCapitalize = 'none'
+                        onChangeText = {input => setPassword(input)}></TextInput>
                 </View>
                 <View style = {styles.textContainer}>
                     <AntDesign name="lock" size={32} color="#5464F8" style = {styles.icon}/>
-                    <TextInput placeholder = "Confirm Password" style = {styles.inputFields} value = {confirmPassword} secureTextEntry = {true} onChangeText = {input => setConfirmPassword(input)}></TextInput>
+                    <TextInput 
+                        placeholder = "Confirm Password" 
+                        style = {styles.inputFields} 
+                        value = {confirmPassword} 
+                        secureTextEntry = {true} 
+                        autoCorrect = {false}
+                        autoCapitalize = 'none'
+                        onChangeText = {input => setConfirmPassword(input)}></TextInput>
                 </View>
-                <View>{password != confirmPassword && <Text style = {{color:"red"}}>Please ensure both passwords are the same</Text>}
+                <View style = {{marginLeft:30}}>{password != confirmPassword && <Text style = {{color:"red"}}>Please ensure both passwords are the same</Text>}
                 </View>
                 <View style = {styles.textContainer}>
                     <AntDesign name="mail" size={32} color="#5464F8" style = {styles.icon}/>
-                    <TextInput placeholder = "Email" style = {styles.inputFields} value = {emailAddress} onChangeText = {input => setEmail(input)}></TextInput>
+                    <TextInput 
+                        placeholder = "Email" 
+                        style = {styles.inputFields} 
+                        value = {emailAddress} 
+                        keyboardType='email-address'
+                        autoCorrect = {false}
+                        autoCapitalize = 'none'
+                        onChangeText = {input => setEmail(input)}></TextInput>
                 </View>
                 <View style = {styles.textContainer}>
                     <AntDesign name="phone" size={32} color="#5464F8" style = {styles.icon}/>
-                    <TextInput placeholder = "Phone Number" style = {styles.inputFields} value = {phoneNumber} onChangeText = {input => setPhoneNumber(input)}></TextInput>
+                    <TextInput 
+                        placeholder = "Phone Number" 
+                        style = {styles.inputFields} 
+                        value = {phoneNumber} 
+                        keyboardType='number-pad'
+                        onChangeText = {input => setPhoneNumber(input)}></TextInput>
                 </View>
                 <View style = {{flex:0.1, justifyContent:"center", flexDirection:'row', paddingTop: 80}}>
                     <TouchableOpacity 
@@ -71,7 +106,7 @@ function registrationPage({navigation}) {
                             <Text style = {styles.buttonText}>Register</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </KeyboardAwareScrollView>
         </TouchableWithoutFeedback>
     );
 } 

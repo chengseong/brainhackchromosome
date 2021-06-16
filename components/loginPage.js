@@ -19,7 +19,7 @@ function loginPage({navigation}) {
 
     function logIn() {
 
-        axios.get(`http://192.168.86.221:3000/api/auth/login/${userName}/${password}`).then((res) => {
+        axios.get(`http://192.168.1.10:3000/api/auth/login/${userName}/${password}`).then((res) => {
             if (res.status == 200) {
                 console.log(true);
                 setUserID(res.data.userId)
@@ -38,7 +38,13 @@ function loginPage({navigation}) {
                 </View>
                 <View style = {styles.textContainer}>
                     <AntDesign name="user" size={32} color="#5464F8" style = {styles.icon}/>
-                    <TextInput placeholder = "Username" style = {styles.inputFields} value = {userName} onChangeText = {input => setUserName(input)}></TextInput>
+                    <TextInput 
+                        placeholder = "Username" 
+                        style = {styles.inputFields} 
+                        value = {userName} 
+                        autoCorrect = {false}
+                        autoCapitalize = 'none'
+                        onChangeText = {input => setUserName(input)}></TextInput>
                 </View>
                 <View style = {styles.textContainer}>
                     <AntDesign name="lock" size={32} color = "#5464F8" style = {styles.icon}/>    
