@@ -14,6 +14,7 @@ import axios from 'axios';
 import AppLoading from 'expo-app-loading';
 import { CommonActions } from '@react-navigation/native';
 
+
 registerForPushNotificationsAsync = async (userID) => {
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
