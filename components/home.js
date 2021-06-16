@@ -175,8 +175,8 @@ export default function Home({navigation}) {
                                             <MapView 
                                                 style={styles.mapView}
                                                 initialRegion={{
-                                                    latitude: clinicToShow.lat,
-                                                    longitude: clinicToShow.long,
+                                                    latitude: parseFloat(clinicToShow.lat),
+                                                    longitude: parseFloat(clinicToShow.long),
                                                     latitudeDelta:0.002,
                                                     longitudeDelta:0.002}}/>
                                             <TouchableOpacity

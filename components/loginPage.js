@@ -1,8 +1,6 @@
 import * as React from 'react';
-import {Button} from 'react-native-paper';
-import {View, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard} from 'react-native'
+import {View, Text, StyleSheet, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard} from 'react-native'
 import { AntDesign } from '@expo/vector-icons'; 
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { Dimensions } from 'react-native';
 import axios from 'axios';
 import { loginContext } from '../shared/loginContext.js';
@@ -33,8 +31,9 @@ function loginPage({navigation}) {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style = {styles.container}> 
-                <View style = {{flex : 0.8, marginLeft: 20, marginRight:20, alignItems:'center'}}>
-                    <Text style = {{fontSize: 40, color: '#5969FE', textAlign:'center', fontFamily: 'roboto-light'}}>Welcome to Tele Consult</Text>    
+                <View style = {{flex : 0.8, marginLeft: 40}}>
+                    <Text style = {{fontSize: 40, color: '#5969FE', fontFamily: 'roboto-light'}}>Welcome to</Text>
+                    <Text style = {{fontSize: 40, color: '#5969FE', fontFamily: 'roboto-light'}}>TeleConsult</Text>    
                 </View>
                 <View style = {styles.textContainer}>
                     <AntDesign name="user" size={32} color="#5464F8" style = {styles.icon}/>
@@ -44,12 +43,15 @@ function loginPage({navigation}) {
                     <AntDesign name="lock" size={32} color = "#5464F8" style = {styles.icon}/>    
                     <TextInput placeholder = "Password" style = {styles.inputFields} value = {password} secureTextEntry = {true} onChangeText = {input => setPassword(input)}></TextInput>
                 </View>
-                <View style = {{flex: 0.5, alignItens:'center', marginTop : 60}}>
-                    <Button mode = "contained" onPress = {() => logIn()} style = {{marginTop:50, backgroundColor:"#5464F8", borderRadius:15}}>Login</Button>
-
+                <View style = {{flex: 0.5, marginTop : 60, marginLeft : Dimensions.get('screen').width * 0.35}}>
+                <TouchableOpacity 
+                    style = {styles.bookingButton}
+                    onPress = {logIn}>
+                        <Text style = {styles.buttonText}>Login</Text>
+                </TouchableOpacity>
                 </View>
-                <View style = {{flex: 0.5, alignItens:'center'}}>
-                    <Text>Don't have an account yet? Sign up <Text onPress = {() => goToRegistration()} style = {{color: 'blue'}}>here</Text>.</Text>
+                <View style = {{flex: 0.2, alignItens:'center', marginLeft: 40}}>
+                    <Text>Don't have an account yet?Sign up <Text onPress = {() => goToRegistration()} style = {{color: 'blue'}}>here</Text>.</Text>
                 </View>
             </View>
         </TouchableWithoutFeedback>
@@ -59,9 +61,7 @@ function loginPage({navigation}) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent : 'center',
-        alignItems : 'center',
-        paddingTop: Dimensions.get('screen').height * 0.15,
+        paddingTop: Dimensions.get('screen').height * 0.13,
     },
     inputFields : {
         flex:1,
@@ -77,6 +77,22 @@ const styles = StyleSheet.create({
     icon: {
         padding:20,
         marginLeft:10
+    },
+    bookingButton: {
+            flexDirection:'row',
+            backgroundColor: '#5464F8',
+            height: 40,
+            width: 100,
+            borderRadius:25,
+            marginBottom: 10,
+            justifyContent:'center',
+            alignContent:'center',
+        },
+        buttonText: {
+            marginTop: 7,
+            fontFamily: 'roboto-bold',
+            fontSize:20,
+            color: 'white'
     }
 });
 

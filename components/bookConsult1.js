@@ -42,8 +42,8 @@ function bookConsult1({navigation}) {
                         <Text style = {styles.subsubHeaderText}>Address </Text>
                         <Text style = {styles.detailsText}>{selectedClinic.address}</Text>
                         <MapView style={styles.map} region={{
-                            latitude: selectedClinic.lat,
-                            longitude: selectedClinic.lon,
+                            latitude: parseFloat(selectedClinic.lat),
+                            longitude: parseFloat(selectedClinic.long),
                             latitudeDelta: 0.0032,
                             longitudeDelta: 0.0032,
                             scrollEnabled: false,

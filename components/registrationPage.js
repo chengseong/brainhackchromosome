@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {Button} from 'react-native-paper';
-import {View, Text, StyleSheet, TextInput, Dimensions, TouchableWithoutFeedback, Keyboard} from 'react-native'
+
+import {View, Text, StyleSheet, TextInput, Dimensions, TouchableWithoutFeedback, Keyboard, TouchableOpacity} from 'react-native'
 import axios from 'axios';
 import { AntDesign } from '@expo/vector-icons'; 
 
@@ -37,8 +37,8 @@ function registrationPage({navigation}) {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style = {styles.container}> 
-                <View style = {{flex : 0.2, marginLeft: 20, marginRight:20, alignItems:'center'}}>
-                    <Text style = {{fontSize: 40, color: '#5969FE', textAlign:'center', fontFamily: 'roboto-light'}}>Sign up with us</Text>    
+                <View style = {{flex : 0.2, marginLeft: 30}}>
+                    <Text style = {{fontSize: 40, color: '#5969FE', fontFamily: 'roboto-light'}}>Sign up with us</Text>    
                 </View>
                 <View style = {styles.textContainer}>
                     <AntDesign name="user" size={32} color="#5464F8" style = {styles.icon}/>
@@ -62,8 +62,12 @@ function registrationPage({navigation}) {
                     <AntDesign name="phone" size={32} color="#5464F8" style = {styles.icon}/>
                     <TextInput placeholder = "Phone Number" style = {styles.inputFields} value = {phoneNumber} onChangeText = {input => setPhoneNumber(input)}></TextInput>
                 </View>
-                <View style = {{flex:0.3, justifyContent:"center"}}>
-                    <Button mode = "contained" style = {{backgroundColor: "#5464F8", borderRadius:25}} onPress = {() => registerAccount()}>Register </Button>
+                <View style = {{flex:0.1, justifyContent:"center", flexDirection:'row', paddingTop: 80}}>
+                    <TouchableOpacity 
+                        style = {styles.bookingButton}
+                        onPress = {registerAccount}>
+                            <Text style = {styles.buttonText}>Register</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </TouchableWithoutFeedback>
@@ -74,8 +78,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: Dimensions.get('screen').height * 0.13,
-        justifyContent : 'center',
-        alignItems : 'center',
     },
     inputFields : {
         flex:1,
@@ -91,7 +93,23 @@ const styles = StyleSheet.create({
         padding:20,
         marginLeft:10,
         color:"#2329D6",
-    }
+    },
+    bookingButton: {
+        flexDirection:'row',
+        backgroundColor: '#5464F8',
+        height: 40,
+        width: 150,
+        borderRadius:25,
+        marginBottom: 10,
+        justifyContent:'center',
+        alignContent:'center',
+    },
+    buttonText: {
+        marginTop: 7,
+        fontFamily: 'roboto-bold',
+        fontSize:20,
+        color: 'white'
+}
 });
 
 export default registrationPage; 
