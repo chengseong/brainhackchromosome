@@ -31,9 +31,9 @@ export default function Home({navigation}) {
     const [userName, setUserName] = useState("")
 
     React.useEffect(() => {
-        const appointments = axios.get(`http://192.168.86.221:3000/api/appointments/getPatientAppointments/${userID}`)
-        const clinics = axios.get(`http://192.168.86.221:3000/api/authClinic/allClinics`)
-        const username = axios.get(`http://192.168.86.221:3000/api/auth/getOneUserName/${userID}`)
+        const appointments = axios.get(`http://192.168.1.10:3000/api/appointments/getPatientAppointments/${userID}`)
+        const clinics = axios.get(`http://192.168.1.10:3000/api/authClinic/allClinics`)
+        const username = axios.get(`http://192.168.1.10:3000/api/auth/getOneUserName/${userID}`)
         axios.all([appointments, clinics, username])
             .then(
                 axios.spread((...responses) => {
@@ -149,7 +149,6 @@ export default function Home({navigation}) {
                                         <Text style={styles.cardText}>{item.consultType}</Text>
                                         <Text style={styles.cardText}>{item.date}</Text>
                                         <Text style={styles.timeText}>{item.time}</Text>
-                                        <View style={styles.circle}></View>
                                     </Card>
                                 </TouchableOpacity>
                             )}/>
@@ -168,14 +167,18 @@ export default function Home({navigation}) {
                                     <View style={{...styles.modalView, ...styles.appointmentsModal}}>
                                         <View paddingTop={20} paddingLeft={20}>
                                             <Text style={styles.modalTitle}>{clinicToShow.clinicName}</Text>
-                                            <Text style={{...styles.modalDescription, ...styles.modalDoctor}}>{toShow.doctor}</Text>
+                                            <Text style={styles.modalSubHeader}>Doctor</Text>
+                                            <Text style={styles.modalDescription}>{toShow.doctorsName}</Text>
+                                            <Text style={styles.modalSubHeader}>Date</Text>
                                             <Text style={styles.modalDescription}>{toShow.date}</Text>
+                                            <Text style={styles.modalSubHeader}>Time</Text>
                                             <Text style={styles.modalDescription}>{toShow.time}</Text>
-                                            <Text style={styles.modalDescription}>{toShow.content}</Text>
-                                            <Text>Email:</Text>
-                                            <Text style={{...styles.modalDescription, marginTop: 20}}>{clinicToShow.email}</Text>
-                                            <Text style={{...styles.modalDescription, marginTop: 5}}>{clinicToShow.phoneNumber}</Text>
-                                            <Text style={{...styles.modalDescription, marginTop: 20}}>{clinicToShow.address}</Text>
+                                            <Text style={styles.modalSubHeader}>Email</Text>
+                                            <Text style={styles.modalDescription}>{clinicToShow.email}</Text>
+                                            <Text style={styles.modalSubHeader}>Phone</Text>
+                                            <Text style={styles.modalDescription}>{clinicToShow.phoneNumber}</Text>
+                                            <Text style={styles.modalSubHeader}>Address</Text>
+                                            <Text style={styles.modalDescription}>{clinicToShow.address}</Text>
                                             <MapView 
                                                 style={styles.mapView}
                                                 scrollEnabled = {false}
@@ -183,7 +186,14 @@ export default function Home({navigation}) {
                                                     latitude: parseFloat(clinicToShow.lat),
                                                     longitude: parseFloat(clinicToShow.long),
                                                     latitudeDelta:0.002,
-                                                    longitudeDelta:0.002}}/>
+                                                    longitudeDelta:0.002,
+                                                    scrollEnabled:false,
+                                                    }}/>
+                                        </View>
+                                        <View 
+                                            flexDirection='row'
+                                            alignItems='center'
+                                            justifyContent='center'>
                                             <TouchableOpacity
                                                 onPress={() => {}}
                                                 style={styles.button}>
@@ -279,21 +289,12 @@ const styles = StyleSheet.create({
         fontFamily: 'roboto-regular',
         color: 'white',
         fontSize: 12,
-        paddingTop: 10
+        paddingTop: 4
     },
     timeText: {
         fontFamily: 'roboto-regular',
         color: 'white',
         fontSize: 12,
-    },
-    circle: {
-        position: 'absolute',
-        left: 0,
-        bottom: -40,
-        width: 20,
-        height: 20,
-        borderRadius: 10,
-        backgroundColor: 'white'
     },
     modalContainer: {
         flex: 1,
@@ -307,25 +308,28 @@ const styles = StyleSheet.create({
         borderColor: '#dddd',
     },
     appointmentsModal: {
-        marginLeft: Dimensions.get('screen').width * 0.1,
-        height: Dimensions.get('screen').height * 0.6,
-        width: Dimensions.get('screen').width * 0.8,
+        marginLeft: Dimensions.get('screen').width * 0.075,
+        height: Dimensions.get('screen').height * 0.75,
+        width: Dimensions.get('screen').width * 0.85,
     },
     modalTitle: {
         fontFamily:'roboto-bold',
         fontSize:30,
         paddingBottom: 10
     },
-    modalDoctor:{
-        paddingVertical:5,
+    modalSubHeader:{
+        fontFamily:'roboto-light',
+        fontSize:12,
+        marginTop: 10,
+        marginBottom: 2
     },
     modalDescription: {
         fontFamily:'roboto-regular',
-        fontSize:15,
+        fontSize:16,
         color: '#444444'
     },
     mapView: {
-        width:260,
+        width:Dimensions.get('screen').width * 0.73,
         height:100,
         borderRadius:15,
         borderWidth:0.5,
@@ -338,7 +342,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#5464F8",
         marginTop: 20,
-        marginLeft: 15,
         borderRadius: 18
     },
     cancelText: {

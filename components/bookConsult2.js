@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, Text, StyleSheet, TextInput, ScrollView, Dimensions} from 'react-native';
+import {View, Text, StyleSheet, TextInput, ScrollView, Dimensions,} from 'react-native';
 import DatePicker from 'react-native-modern-datepicker';
 import { getToday } from 'react-native-modern-datepicker';
 import {Picker} from '@react-native-picker/picker';
@@ -8,6 +8,7 @@ import axios from 'axios'
 import moment from 'moment'
 import { userIDContext } from '../shared/userContext';
 import AppLoading from 'expo-app-loading';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 
 
 
@@ -22,7 +23,7 @@ function bookConsult2({route, navigation}) {
     const [loaded, setLoaded] = React.useState(false)
 
     React.useEffect(() => {
-        axios.get(`http://192.168.86.221:3000/api/appointments/getClinicAppointments/${clinicID}`).then(response => {
+        axios.get(`http://192.168.1.10:3000/api/appointments/getClinicAppointments/${clinicID}`).then(response => {
             clinicAppts = response.data.map(appointment => appointment.time)
             const temp = []
             var startTime = moment().utc().set({"hour":9, "minute": 0});
@@ -63,12 +64,15 @@ function bookConsult2({route, navigation}) {
             consultType : consultType
         }
         console.log(apptData)
-        axios.post("http://192.168.86.221:3000/api/appointments/createAppointments", apptData).then((res) => {navigation.navigate("bookConsult3", apptData)})
+        axios.post("http://192.168.1.10:3000/api/appointments/createAppointments", apptData).then((res) => {navigation.navigate("bookConsult3", apptData)})
     }
     
     
     if (loaded) {return(
-        <ScrollView backgroundColor='white' style = {{flexGrow:1}}>
+        <KeyboardAwareScrollView 
+            backgroundColor='white' 
+            style = {{flexGrow:1}}
+            showsVerticalScrollIndicator={false}>
             <View style = {styles.container}> 
                 <View style = {styles.header}>
                     <Text style = {styles.headerText}>
@@ -102,8 +106,10 @@ function bookConsult2({route, navigation}) {
                         multiline
                         marginTop = {10}
                         height = {100}
+                        width = '100%'
                         backgroundColor = '#eeee'
                         borderRadius = {15}
+                        paddingLeft = {15}
                         value = {description} 
                         onChangeText = {(text) => 
                         setDescription(text)}/>
@@ -112,10 +118,11 @@ function bookConsult2({route, navigation}) {
                     <Button text = "Next" onPress = {() => completeBooking()}/>
                 </View>}
             </View>
-        </ScrollView>
+        </KeyboardAwareScrollView>
     );} else {
             return <AppLoading 
-            onFinish={() => setLoaded(true)}/> 
+            onFinish={() => setLoaded(true)}
+            onError={console.warn}/> 
     }
     
 };

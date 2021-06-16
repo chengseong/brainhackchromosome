@@ -17,7 +17,7 @@ function bookConsult1({navigation}) {
 
     
     React.useEffect(() => {
-        axios.get("http://192.168.86.221:3000/api/authClinic/allClinics").then(response => {
+        axios.get("http://192.168.1.10:3000/api/authClinic/allClinics").then(response => {
             setClinicArr(response.data);
             setSelectedClinic(response.data[0])
         }).then(() => setClinicLoaded(true));
@@ -34,7 +34,10 @@ function bookConsult1({navigation}) {
     
     if (clinicLoaded) {
         return (
-        <ScrollView backgroundColor='white' style = {{flexGrow:1}}>
+        <ScrollView 
+            backgroundColor='white' 
+            style = {{flexGrow:1}}
+            showsVerticalScrollIndicator={false}>
             <View style = {styles.container}>
             <View style = {styles.header}>
                 <Text style = {styles.headerText}>Book a Consultation</Text>
@@ -69,7 +72,7 @@ function bookConsult1({navigation}) {
                         }}/> 
 
                     </View>
-                    <View style = {{flex: 0.25, marginTop: 20}}>
+                    <View style = {{flex: 0.25, marginTop: 20,}}>
                         <View style = {{flex:0, marginTop:5}}>
                             <Text style = {styles.subsubHeaderText}>Email </Text>
                             <Text style = {styles.detailsText}>{selectedClinic.email}</Text>
@@ -78,9 +81,9 @@ function bookConsult1({navigation}) {
                             <Text style = {styles.subsubHeaderText}>Phone </Text>
                             <Text style = {styles.detailsText}>{selectedClinic.phoneNumber}</Text>
                         </View>
-                        <View style = {{flex:0, marginTop:10}}> 
-                            <Text style = {styles.subsubHeaderText}>Select Consultation Type:</Text>
-                            <View style = {{flex:0, flexDirection:'row', alignItems: 'center'}}> 
+                        <View style = {{flex:0, marginTop:30}}> 
+                            <Text style = {styles.subHeaderText}>Select Consultation Type</Text>
+                            <View style = {{flex:0, flexDirection:'row', alignItems: 'center', marginTop: 10}}> 
                                 <RadioButton 
                                     value = "Physical" 
                                     status = {consultType === "Physical" ? 'checked' : 'unchecked'}
@@ -97,8 +100,8 @@ function bookConsult1({navigation}) {
                                     <Text>Virtual </Text>
                             </View>
                         </View>
-                        <View style = {{flex:0, marginTop:10}}> 
-                            <Text style = {styles.subsubHeaderText}> Select your Doctor</Text>
+                        <View style = {{flex:0, marginTop:30, width: Dimensions.get('screen').width * 0.8}}> 
+                            <Text style = {styles.subHeaderText}> Select your Doctor</Text>
                             <Picker
                                 selectedValue = {doctorName}
                                 onValueChange = {(doctor) => {setDoctorName(doctor)}}
@@ -123,7 +126,8 @@ function bookConsult1({navigation}) {
         </ScrollView>
     )} else {
         return <AppLoading 
-        onFinish={() => setClinicLoaded(true)}/>
+        onFinish={() => setClinicLoaded(true)}
+        onError={console.warn}/>
     }
 } 
 
@@ -140,7 +144,7 @@ const styles = StyleSheet.create({
     selectClinicContainer : {
         paddingTop: 20,
         flex : 0.5,
-        width:"80%",
+        width: Dimensions.get('screen').width * 0.8,
         marginLeft:30,
     },
     headerText: {
@@ -153,9 +157,9 @@ const styles = StyleSheet.create({
     },
     subsubHeaderText : {
         fontFamily:'roboto-light',
-        fontSize:16,
+        fontSize: 14,
         marginTop: 10,
-        marginBottom: 5,
+        marginBottom: 2,
     },
     detailsText:{
         fontFamily: 'roboto-regular',

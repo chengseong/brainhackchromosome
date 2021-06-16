@@ -15,7 +15,7 @@ function bookConsult3({route, navigation}) {
     const [clinic, setClinicName] = React.useState()
     const [loaded, setLoaded] = React.useState(false)
     React.useEffect(() => {
-        axios.get(`http://192.168.86.221:3000/api/authClinic/oneClinic/${clinicID}`).then(response => {
+        axios.get(`http://192.168.1.10:3000/api/authClinic/oneClinic/${clinicID}`).then(response => {
             console.log(response.data)
             setClinicName(response.data);
             setLoaded(true)
@@ -25,7 +25,9 @@ function bookConsult3({route, navigation}) {
 
     
     if (loaded) {return (
-        <ScrollView style = {{flexGrow: 1, backgroundColor:'white'}}>
+        <ScrollView 
+            style = {{flexGrow: 1, backgroundColor:'white'}}
+            showsVerticalScrollIndicator={false}>
             <View style = {styles.container}> 
                 <View style = {styles.header}><Text style = {styles.headerText}>
                     Your appointment has been booked!
@@ -42,7 +44,7 @@ function bookConsult3({route, navigation}) {
                         <Text style = {styles.detailsText}>{time}</Text>
                     </View>
                 </View>
-                <View style = {{flex:0.2, marginTop:50, marginLeft:30}}> 
+                <View style = {{flex:0.2, marginTop:30, marginLeft:30}}> 
                     <Text style = {{fontSize:24, fontFamily: 'roboto-bold'}}>{clinic.clinicName}</Text>
                 </View>
                 <View style = {{flex:0.2, marginLeft:30}}> 
@@ -68,15 +70,20 @@ function bookConsult3({route, navigation}) {
                         <Text style = {styles.subHeaderText}>Phone</Text> 
                         <Text style = {styles.detailsText}>{clinic.phoneNumber}</Text>
                     </View>
-                    <Text style = {{marginVertical:20, fontFamily:'roboto-regular'}}>You will be reminded 15 minutes before your consultation.</Text>
-                    <Button onPress = {() => (navigation.dispatch(StackActions.popToTop()))}  text = "Return Home"></Button>
-                    
+                    <Text style = {{marginTop:20, fontFamily:'roboto-regular'}}>You will be reminded 15 minutes before your consultation.</Text>
                 </View>      
+                <View
+                    marginTop={20}
+                    flexDirection='row'
+                    justifyContent='center'>
+                    <Button onPress = {() => (navigation.dispatch(StackActions.popToTop()))}  text = "Return Home"></Button>
+                </View>
             </View>
         </ScrollView>
     );} else {
         return <AppLoading 
-        onFinish={() => setLoaded(true)}/>
+        onFinish={() => setLoaded(true)}
+        onError={console.warn}/>
     }
     
 } 
@@ -97,9 +104,9 @@ const styles = StyleSheet.create({
     },
     subHeaderText : {
         fontFamily:'roboto-light',
-        fontSize:16,
+        fontSize: 14,
         marginTop: 10,
-        marginBottom: 5,
+        marginBottom: 2,
     },
     detailsText:{
         fontFamily: 'roboto-regular',
