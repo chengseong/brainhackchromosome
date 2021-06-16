@@ -15,7 +15,7 @@ function bookConsult3({route, navigation}) {
     const [clinic, setClinicName] = React.useState()
     const [loaded, setLoaded] = React.useState(false)
     React.useEffect(() => {
-        axios.get(`http://192.168.1.10:3000/api/authClinic/oneClinic/${clinicID}`).then(response => {
+        axios.get(`http://192.168.86.221:3000/api/authClinic/oneClinic/${clinicID}`).then(response => {
             console.log(response.data)
             setClinicName(response.data);
             setLoaded(true)

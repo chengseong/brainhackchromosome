@@ -2,6 +2,7 @@ import React, {useState, useContext} from 'react';
 
 import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Modal, TouchableWithoutFeedback, Keyboard, ActivityIndicator} from 'react-native';
 import { EvilIcons, Ionicons, } from '@expo/vector-icons';
+import * as Notifications from 'expo-notifications';
 
 import { Dimensions } from 'react-native';
 import MapView from 'react-native-maps';
@@ -13,7 +14,32 @@ import axios from 'axios';
 import AppLoading from 'expo-app-loading';
 import { CommonActions } from '@react-navigation/native';
 
-
+registerForPushNotificationsAsync = async (userID) => {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      const token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+      axios.post("http://192.168.86.221:3000/api/auth/pushToken", {
+            pushToken: token,
+            userId: userID   
+      })
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+    };
 
 export default function Home({navigation}) {
     const [appointmentsVisible, setAppointmentsVisible] = useState(false);
@@ -31,9 +57,9 @@ export default function Home({navigation}) {
     const [userName, setUserName] = useState("")
 
     React.useEffect(() => {
-        const appointments = axios.get(`http://192.168.1.10:3000/api/appointments/getPatientAppointments/${userID}`)
-        const clinics = axios.get(`http://192.168.1.10:3000/api/authClinic/allClinics`)
-        const username = axios.get(`http://192.168.1.10:3000/api/auth/getOneUserName/${userID}`)
+        const appointments = axios.get(`http://192.168.86.221:3000/api/appointments/getPatientAppointments/${userID}`)
+        const clinics = axios.get(`http://192.168.86.221:3000/api/authClinic/allClinics`)
+        const username = axios.get(`http://192.168.86.221:3000/api/auth/getOneUserName/${userID}`)
         axios.all([appointments, clinics, username])
             .then(
                 axios.spread((...responses) => {
@@ -45,7 +71,7 @@ export default function Home({navigation}) {
                     setClinics(clinicsRes);
                     setUserName(usernameRes);
                 })
-            ).then(() => setAppointmentsLoaded(true))
+            ).then(() => {setAppointmentsLoaded(true), registerForPushNotificationsAsync(userID)})
       }, []);
 
     function cancelAppointment(appointmentId) {
