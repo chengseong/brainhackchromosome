@@ -22,7 +22,7 @@ registerForPushNotificationsAsync = async (userID) => {
         const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
       }
-      if (finalStatus !== 'granted') {
+      if (finalStatus !== 'granted') {  
         alert('Failed to get push token for push notification!');
         return;
       }
