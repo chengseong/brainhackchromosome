@@ -20,9 +20,20 @@ function bookConsult1({navigation}) {
         axios.get("http://192.168.1.10:3000/api/authClinic/allClinics").then(response => {
             setClinicArr(response.data);
             setSelectedClinic(response.data[0])
+            //setDoctorName
         }).then(() => setClinicLoaded(true));
       }, []);
 
+    function goNext() {
+        if (doctorName == "") {
+            console.log("hello")
+            return
+        } else {navigation.navigate("bookConsult2", {
+            clinicID : selectedClinic._id,
+            doctorName : doctorName,
+            consultType : consultType
+        })}
+    }
     
     
     /*const [clinicArr, setClinicArr] = React.useState([
@@ -115,11 +126,7 @@ function bookConsult1({navigation}) {
                 </View>
                 <View style = {{flex:0.1,justifyContent:"center", alignItems:"center", marginTop:40 }}>
                     <Button
-                        onPress={() => navigation.navigate("bookConsult2", {
-                            clinicID : selectedClinic._id,
-                            doctorName : doctorName,
-                            consultType : consultType
-                        })}
+                        onPress={() => goNext()}
                         text='Next'/>
                 </View>
             </View>

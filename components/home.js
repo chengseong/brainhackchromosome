@@ -11,7 +11,7 @@ import Button from '../shared/button';
 import { userIDContext } from '../shared/userContext';
 import axios from 'axios';
 import AppLoading from 'expo-app-loading';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 
 
 
@@ -47,6 +47,16 @@ export default function Home({navigation}) {
                 })
             ).then(() => setAppointmentsLoaded(true))
       }, []);
+
+    function cancelAppointment(appointmentId) {
+        console.log(appointmentId)
+        const deleteJSON = {
+            appointmentId: appointmentId
+        };
+        axios.delete('http://192.168.86.221:3000/api/appointments/deletePatientAppointments', {data: deleteJSON}).then((res) => {
+            (navigation.dispatch(CommonActions.reset({index:1, routes:[{name: 'Home'}]})))
+        })
+    }
 
     function findClinic(clinicId) {
         let clinic;
@@ -167,18 +177,21 @@ export default function Home({navigation}) {
                                     <View style={{...styles.modalView, ...styles.appointmentsModal}}>
                                         <View paddingTop={20} paddingLeft={20}>
                                             <Text style={styles.modalTitle}>{clinicToShow.clinicName}</Text>
+
                                             <Text style={styles.modalSubHeader}>Doctor</Text>
                                             <Text style={styles.modalDescription}>{toShow.doctorsName}</Text>
                                             <Text style={styles.modalSubHeader}>Date</Text>
                                             <Text style={styles.modalDescription}>{toShow.date}</Text>
                                             <Text style={styles.modalSubHeader}>Time</Text>
                                             <Text style={styles.modalDescription}>{toShow.time}</Text>
+
                                             <Text style={styles.modalSubHeader}>Email</Text>
                                             <Text style={styles.modalDescription}>{clinicToShow.email}</Text>
                                             <Text style={styles.modalSubHeader}>Phone</Text>
                                             <Text style={styles.modalDescription}>{clinicToShow.phoneNumber}</Text>
                                             <Text style={styles.modalSubHeader}>Address</Text>
                                             <Text style={styles.modalDescription}>{clinicToShow.address}</Text>
+
                                             <MapView 
                                                 style={styles.mapView}
                                                 scrollEnabled = {false}
@@ -195,7 +208,7 @@ export default function Home({navigation}) {
                                             alignItems='center'
                                             justifyContent='center'>
                                             <TouchableOpacity
-                                                onPress={() => {}}
+                                                onPress={() => {cancelAppointment(toShow._id)}}
                                                 style={styles.button}>
                                                     <View>
                                                         <Text style={styles.cancelText}>Cancel Appointment</Text>

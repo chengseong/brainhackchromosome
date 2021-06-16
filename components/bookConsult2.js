@@ -17,42 +17,51 @@ function bookConsult2({route, navigation}) {
     const clinicID = route.params.clinicID;
     const consultType = route.params.consultType;
     const doctorName = route.params.doctorName;
+    console.log(doctorName);
+    console.log(consultType)
+    const[clinicAppts, setClinicAppts] = React.useState([])
     const userID = React.useContext(userIDContext);
-    var clinicAppts = []
     const [timeSlotArr, setTimeSlotArr] = React.useState('')
     const [loaded, setLoaded] = React.useState(false)
-
-    React.useEffect(() => {
-        axios.get(`http://192.168.1.10:3000/api/appointments/getClinicAppointments/${clinicID}`).then(response => {
-            clinicAppts = response.data.map(appointment => appointment.time)
-            const temp = []
-            var startTime = moment().utc().set({"hour":9, "minute": 0});
-            var endTime = moment().utc().set({"hour":17, "minute": 0});
-
-            while (startTime <= endTime) {
-                const tempTime = moment(startTime)
-                const stringTime = tempTime.format("hh:mm")
-                if (clinicAppts.includes(stringTime)) {
-                    console.log("Booked")
-                } else {
-                    temp.push(new moment(startTime).format('HH:mm'))
-                }
-                startTime.add(30, 'minute')
-            }
-            setTimeSlotArr(temp)
-        }).then(() => setLoaded(true));
-    }, []);
-
-    //Generate all available timeslots here, need to process available Slots
-   
-
-    
-
     const [date, setDate] = React.useState('')
     const [dateSelected, setDateSelected] = React.useState(false)
-    const [selectedTime, setSelectedTime] = React.useState(timeSlotArr[0])
+    const [selectedTime, setSelectedTime] = React.useState("")
     const [description, setDescription] = React.useState("")
+
+    React.useEffect(() => {
+        axios.get(`http://192.168.86.221:3000/api/appointments/getClinicAppointments/${clinicID}`).then(response => {
+            setClinicAppts(response.data)
+            console.log(clinicAppts)
+        }).then(() => setLoaded(true));
+    }, []);  
     
+    function changeDate(newDate) {
+        //Need to filter date here
+        console.log(clinicAppts)
+        console.log(newDate)
+        const sameDateAppointments = clinicAppts.filter(appt => appt.date == newDate)
+        const bookedSlots = sameDateAppointments.map(appt => appt.time)
+        const temp = []
+        var startTime = moment().utc().set({"hour":9, "minute": 0});
+        var endTime = moment().utc().set({"hour":17, "minute": 0});
+        while (startTime <= endTime) {
+            const tempTime = moment(startTime)
+            const stringTime = tempTime.format("hh:mm")
+            
+            if (bookedSlots.includes(stringTime)) {
+                console.log("Booked")
+            } else {
+                temp.push(new moment(startTime).format('HH:mm'))
+            }
+            startTime.add(30, 'minute')
+        }
+        setTimeSlotArr(temp)
+        setSelectedTime(temp[0])
+
+        setDate(newDate);
+        setDateSelected(true);
+    }
+
     function completeBooking() {
         const apptData = {
             clinicId : clinicID,
@@ -86,7 +95,7 @@ function bookConsult2({route, navigation}) {
                     <DatePicker 
                         mode = "calendar"
                         minimumDate = {currDate}
-                        onDateChange = {(newDate) => {setDate(newDate);setDateSelected(true)}}
+                        onDateChange = {(newDate) => {changeDate(newDate)}}
                     />
                 </View>
                 {dateSelected &&
