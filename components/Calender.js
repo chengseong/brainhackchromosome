@@ -4,58 +4,38 @@ import {Agenda} from 'react-native-calendars';
 import { Ionicons } from '@expo/vector-icons'
 import { StatusBar } from 'expo-status-bar';
 import Axios from 'axios';
-//import Moment from 'moment';
 
 
 export default class AgendaScreen extends Component {
+
+
   
   constructor(props) {
     super(props);
-    Axios.get("http://192.168.50.189:3000/api/appointments/getPatientAppointments/60c9f3685b9ece621c978a4b").then(
+
+    Axios.get("http://192.168.50.189:3000/api/appointments/getPatientAppointments/60c77acbb9dcba875c0d5ca5").then(
       (response) => {
-        console.log(response.data)
         for (var i = 0; i < response.data.length; i++) {
-          const appointmentDetails = response.data[i] 
-          console.log("date format")
-          console.log(appointmentDetails.date)
+          const appointmentDetails = response.data[i]
           Axios.get("http://192.168.50.189:3000/api/authClinic/oneClinic/" + response.data[i].clinicId).then(
             (clinicDetails) => {
   
-          if (appointmentDetails.date in this.state.items) {
-            this.state.items[appointmentDetails.date] += [[appointmentDetails.doctorsName, //include doctors name, check if correct 
-                                                     appointmentDetails.time, 
-                                                     clinicDetails.data.clinicName]]
-          }
-          else {
             this.state.items[appointmentDetails.date] = [[
               appointmentDetails.doctorsName,
               appointmentDetails.time, 
               clinicDetails.data.clinicName]] 
-          }
-          console.log(this.state.items[appointmentDetails.date])
-          this.highest(this.state.items[appointmentDetails.date])
-          console.log("during for loop")
-          //console.log("kdfgg")
-          //console.log(this.state.items)
+  
         }
           )
         }
       }
     )
-  
-
-
-
     this.state = {
       items: {
       }
     };
 
-    console.log("yeeet")
-    console.log("02:00">"22:30")
-
   }
-
   render() {
     return ( 
       <View style={styles.container}>
@@ -79,13 +59,8 @@ export default class AgendaScreen extends Component {
             rowHasChanged={this.rowHasChanged.bind(this)}
             theme={{agendaTodayColor: '#5464F8', agendaDayTextColor:'#5464F8', dotColor: 'salmon',selectedDayBackgroundColor:'#5464F8',todayTextColor:'#5464F8'}}
         />
-
     </View>
-
-
-        
-        
-    
+  
     );
   }
 
@@ -138,36 +113,6 @@ export default class AgendaScreen extends Component {
     return date.toISOString().split('T')[0];
   }
 
-  compareObj(o1,o2,key) {
-    if (o1[key]< o2[key]) {
-      return -1
-    }
-    if (o1[key]> o2[key]) {
-      return 1
-    }
-    return 0
-  }
-
-  dynamicSort(property) {
-    var sortOrder = 1;
-    if(property[0] === "-") {
-        sortOrder = -1;
-        property = property.substr(1);
-    }
-    return function (a,b) {
-        /* next line works with strings and numbers, 
-         * and you may want to customize it to your needs
-         */
-        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
-        return result * sortOrder;
-    }
-}
-
-highest(){ 
-  return [].slice.call(arguments).sort(function(a,b){ 
-    return a[1] - b[1]; 
-  }); 
-}
 }
 
 const styles = StyleSheet.create({
