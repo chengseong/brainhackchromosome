@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Button, View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import MapView from 'react-native-maps';
 import { Ionicons, AntDesign } from '@expo/vector-icons'; 
 import AppLoading from 'expo-app-loading';
 import axios from 'axios'
 import { StackActions } from '@react-navigation/native';
+import Button from '../shared/button';
 
 function bookConsult3({route, navigation}) {
     const clinicID = route.params.clinicId;
@@ -48,7 +49,9 @@ function bookConsult3({route, navigation}) {
                     <Text style = {styles.subHeaderText}>Address</Text> 
                     <Text style = {styles.detailsText}>{clinic.address}</Text>
                     <View style = {{flex:0.5}}>
-                    <MapView style={styles.map} region={{
+                    <MapView style={styles.map} 
+                    scrollEnabled = {false}
+                    region={{
                         latitude: parseFloat(clinic.lat),
                         longitude: parseFloat(clinic.long),
                         latitudeDelta: 0.0032,
@@ -66,7 +69,7 @@ function bookConsult3({route, navigation}) {
                         <Text style = {styles.detailsText}>{clinic.phoneNumber}</Text>
                     </View>
                     <Text style = {{marginVertical:20, fontFamily:'roboto-regular'}}>You will be reminded 15 minutes before your consultation.</Text>
-                    <View style = {{flex:0, marginTop:10, marginBottom:20, justifyContent:'center', alignItems:'center'}}><Button onPress = {() => (navigation.dispatch(StackActions.popToTop()))} title = "Return Home"></Button></View>
+                    <Button onPress = {() => (navigation.dispatch(StackActions.popToTop()))}  text = "Return Home"></Button>
                     
                 </View>      
             </View>

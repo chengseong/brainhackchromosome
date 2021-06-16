@@ -11,6 +11,7 @@ import Button from '../shared/button';
 import { userIDContext } from '../shared/userContext';
 import axios from 'axios';
 import AppLoading from 'expo-app-loading';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 
 
@@ -27,30 +28,30 @@ export default function Home({navigation}) {
     const [appointments, setAppointments] = useState({});
     const [appointmentsLoaded, setAppointmentsLoaded] = useState(false);
     const [clinics, setClinics] = useState({});
+    const [userName, setUserName] = useState("")
 
-    function getAppointments(){
-        axios.get(`http://192.168.1.10:3000/api/appointments/getPatientAppointments/60c77acbb9dcba875c0d5ca5`).then((res) => {
-            setAppointments(res.data);
-        }).catch(err => {
-            console.log(err)})
-    }
-    
-    function getClinics(){
-        axios.get(`http://192.168.1.10:3000/api/authClinic/allClinics`).then((res) => {
-            setClinics(res.data);
-        }).catch(err => {
-            console.log(err)})
-    }
-    
-    function preLoad() {
-        getClinics();
-        getAppointments();
-    }
+    React.useEffect(() => {
+        const appointments = axios.get(`http://192.168.86.221:3000/api/appointments/getPatientAppointments/${userID}`)
+        const clinics = axios.get(`http://192.168.86.221:3000/api/authClinic/allClinics`)
+        const username = axios.get(`http://192.168.86.221:3000/api/auth/getOneUserName/${userID}`)
+        axios.all([appointments, clinics, username])
+            .then(
+                axios.spread((...responses) => {
+                    const appointmentsRes = responses[0].data;
+                    const clinicsRes = responses[1].data;
+                    const usernameRes = responses[2].data;
+                    
+                    setAppointments(appointmentsRes);
+                    setClinics(clinicsRes);
+                    setUserName(usernameRes);
+                })
+            ).then(() => setAppointmentsLoaded(true))
+      }, []);
 
     function findClinic(clinicId) {
         let clinic;
         for (c in clinics){
-            if (clinics[c]._id == '60c8d1c98f4682c9863b6e3b') {
+            if (clinics[c]._id == clinicId) {
                 clinic = clinics[c];
                 break;
             }
@@ -64,7 +65,7 @@ export default function Home({navigation}) {
                 <View style = {styles.container} > 
                     <View style = {styles.header}>
                         <View flex={2}>
-                            <Text style = {styles.name}>Placeholder Name</Text>
+                            <Text style = {styles.name}>{userName}</Text>
                         </View>
                         <View flex={1} flexDirection='row' justifyContent='flex-end' paddingRight={40}>
                             <Ionicons
@@ -88,6 +89,7 @@ export default function Home({navigation}) {
                                         paddingTop={10}
                                         data={appointments}
                                         renderItem={({item}) => (
+
                                             <View style={styles.notificationStyle}> 
                                                 <View justifyContent='center'>
                                                     <Feather
@@ -143,7 +145,8 @@ export default function Home({navigation}) {
                                     setAppointmentsVisible(true);}}>
                                     <Card>
                                         <Text style={styles.clinicName}>{findClinic(item.clinicId).clinicName}</Text>
-                                        <Text style={styles.cardText}>{item.doctor}</Text>
+                                        <Text style={styles.cardText}>{item.doctorsName}</Text>
+                                        <Text style={styles.cardText}>{item.consultType}</Text>
                                         <Text style={styles.cardText}>{item.date}</Text>
                                         <Text style={styles.timeText}>{item.time}</Text>
                                         <View style={styles.circle}></View>
@@ -169,14 +172,16 @@ export default function Home({navigation}) {
                                             <Text style={styles.modalDescription}>{toShow.date}</Text>
                                             <Text style={styles.modalDescription}>{toShow.time}</Text>
                                             <Text style={styles.modalDescription}>{toShow.content}</Text>
+                                            <Text>Email:</Text>
                                             <Text style={{...styles.modalDescription, marginTop: 20}}>{clinicToShow.email}</Text>
                                             <Text style={{...styles.modalDescription, marginTop: 5}}>{clinicToShow.phoneNumber}</Text>
                                             <Text style={{...styles.modalDescription, marginTop: 20}}>{clinicToShow.address}</Text>
                                             <MapView 
                                                 style={styles.mapView}
-                                                initialRegion={{
-                                                    latitude: clinicToShow.lat,
-                                                    longitude: clinicToShow.long,
+                                                scrollEnabled = {false}
+                                                region={{
+                                                    latitude: parseFloat(clinicToShow.lat),
+                                                    longitude: parseFloat(clinicToShow.long),
                                                     latitudeDelta:0.002,
                                                     longitudeDelta:0.002}}/>
                                             <TouchableOpacity
@@ -209,9 +214,6 @@ export default function Home({navigation}) {
     } else {
         return (
             <AppLoading
-            startAsync={preLoad}
-            onFinish={() => setAppointmentsLoaded(true)}
-            onError={console.warn}
         />
         )
     }

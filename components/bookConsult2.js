@@ -7,22 +7,45 @@ import Button from '../shared/button';
 import axios from 'axios'
 import moment from 'moment'
 import { userIDContext } from '../shared/userContext';
+import AppLoading from 'expo-app-loading';
+
 
 
 function bookConsult2({route, navigation}) {
     const currDate = getToday().replace("/", "-").replace("/", "-")
     const clinicID = route.params.clinicID;
+    const consultType = route.params.consultType;
+    const doctorName = route.params.doctorName;
     const userID = React.useContext(userIDContext);
+    var clinicAppts = []
+    const [timeSlotArr, setTimeSlotArr] = React.useState('')
+    const [loaded, setLoaded] = React.useState(false)
+
+    React.useEffect(() => {
+        axios.get(`http://192.168.86.221:3000/api/appointments/getClinicAppointments/${clinicID}`).then(response => {
+            clinicAppts = response.data.map(appointment => appointment.time)
+            const temp = []
+            var startTime = moment().utc().set({"hour":9, "minute": 0});
+            var endTime = moment().utc().set({"hour":17, "minute": 0});
+
+            while (startTime <= endTime) {
+                const tempTime = moment(startTime)
+                const stringTime = tempTime.format("hh:mm")
+                if (clinicAppts.includes(stringTime)) {
+                    console.log("Booked")
+                } else {
+                    temp.push(new moment(startTime).format('HH:mm'))
+                }
+                startTime.add(30, 'minute')
+            }
+            setTimeSlotArr(temp)
+        }).then(() => setLoaded(true));
+    }, []);
 
     //Generate all available timeslots here, need to process available Slots
-    var startTime = moment().utc().set({"hour":9, "minute": 0});
-    var endTime = moment().utc().set({"hour":17, "minute": 0});
+   
 
-    const timeSlotArr = []
-    while (startTime <= endTime) {
-        timeSlotArr.push(new moment(startTime).format('HH:mm'))
-        startTime.add(30, 'minute')
-    }
+    
 
     const [date, setDate] = React.useState('')
     const [dateSelected, setDateSelected] = React.useState(false)
@@ -35,14 +58,16 @@ function bookConsult2({route, navigation}) {
             patientId : userID, 
             date : date,
             time : selectedTime,
-            content : description
+            content : description,
+            doctorsName: doctorName,
+            consultType : consultType
         }
+        console.log(apptData)
         axios.post("http://192.168.86.221:3000/api/appointments/createAppointments", apptData).then((res) => {navigation.navigate("bookConsult3", apptData)})
     }
     
     
-
-    return(
+    if (loaded) {return(
         <ScrollView backgroundColor='white' style = {{flexGrow:1}}>
             <View style = {styles.container}> 
                 <View style = {styles.header}>
@@ -88,7 +113,11 @@ function bookConsult2({route, navigation}) {
                 </View>}
             </View>
         </ScrollView>
-    );
+    );} else {
+            return <AppLoading 
+            onFinish={() => setLoaded(true)}/> 
+    }
+    
 };
 
 const styles = StyleSheet.create({

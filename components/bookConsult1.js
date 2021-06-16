@@ -4,21 +4,26 @@ import { Picker } from '@react-native-picker/picker';
 import MapView from 'react-native-maps';
 import Button from '../shared/button';
 import AppLoading from 'expo-app-loading';
-import axios from 'axios'
-
+import axios from 'axios';
+import { RadioButton } from 'react-native-paper';
 
 function bookConsult1({navigation}) {
     //To pull from backend
     const [clinicArr, setClinicArr] = React.useState([])
     const [selectedClinic, setSelectedClinic] = React.useState({})
     const [clinicLoaded, setClinicLoaded] = React.useState(false)
+    const [doctorName, setDoctorName] = React.useState("")
+    const [consultType, setConsultType] = React.useState("Physical")
 
+    
     React.useEffect(() => {
         axios.get("http://192.168.86.221:3000/api/authClinic/allClinics").then(response => {
             setClinicArr(response.data);
             setSelectedClinic(response.data[0])
         }).then(() => setClinicLoaded(true));
       }, []);
+
+    
     
     /*const [clinicArr, setClinicArr] = React.useState([
         {name: "Clinic 1", address : "TestAddress1", email : "123@gmail.com", phoneNumber:"88888888", lat: 1.3214 , lon: 103.8458},
@@ -53,13 +58,16 @@ function bookConsult1({navigation}) {
                     marginTop={10}>
                         <Text style = {styles.subsubHeaderText}>Address </Text>
                         <Text style = {styles.detailsText}>Test address</Text>
-                        <MapView style={styles.map} region={{
+                        <MapView style={styles.map} 
+                        scrollEnabled = {false}
+                        region={{
                             latitude: parseFloat(selectedClinic.lat),
                             longitude: parseFloat(selectedClinic.long),
                             latitudeDelta: 0.0032,
                             longitudeDelta: 0.0032,
                             scrollEnabled: false,
                         }}/> 
+
                     </View>
                     <View style = {{flex: 0.25, marginTop: 20}}>
                         <View style = {{flex:0, marginTop:5}}>
@@ -70,11 +78,45 @@ function bookConsult1({navigation}) {
                             <Text style = {styles.subsubHeaderText}>Phone </Text>
                             <Text style = {styles.detailsText}>{selectedClinic.phoneNumber}</Text>
                         </View>
+                        <View style = {{flex:0, marginTop:10}}> 
+                            <Text style = {styles.subsubHeaderText}>Select Consultation Type:</Text>
+                            <View style = {{flex:0, flexDirection:'row', alignItems: 'center'}}> 
+                                <RadioButton 
+                                    value = "Physical" 
+                                    status = {consultType === "Physical" ? 'checked' : 'unchecked'}
+                                    onPress = {() => setConsultType("Physical")}
+                                    color = "#2329D6"/>
+                                <Text>Physical </Text>
+                            </View>
+                            <View style = {{flex:0, flexDirection:'row', alignItems: 'center'}}>    
+                                <RadioButton 
+                                    value = "Virtual" 
+                                    status = {consultType === "Virtual" ? 'checked' : 'unchecked'}
+                                    onPress = {() => setConsultType("Virtual")}
+                                    color = "#2329D6"/> 
+                                    <Text>Virtual </Text>
+                            </View>
+                        </View>
+                        <View style = {{flex:0, marginTop:10}}> 
+                            <Text style = {styles.subsubHeaderText}> Select your Doctor</Text>
+                            <Picker
+                                selectedValue = {doctorName}
+                                onValueChange = {(doctor) => {setDoctorName(doctor)}}
+                                >
+                                {selectedClinic.doctors.map((name) => (
+                                <Picker.Item label = {name} value = {name} key = {name}/>  
+                                ))}
+                            </Picker>
+                        </View>
                     </View>
                 </View>
                 <View style = {{flex:0.1,justifyContent:"center", alignItems:"center", marginTop:40 }}>
                     <Button
-                        onPress={() => navigation.navigate("bookConsult2", {clinicID : selectedClinic._id})}
+                        onPress={() => navigation.navigate("bookConsult2", {
+                            clinicID : selectedClinic._id,
+                            doctorName : doctorName,
+                            consultType : consultType
+                        })}
                         text='Next'/>
                 </View>
             </View>

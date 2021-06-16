@@ -29,7 +29,7 @@ const Stack = createStackNavigator()
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [userID, setUserID] = useState('')
   
   if (fontsLoaded) {
